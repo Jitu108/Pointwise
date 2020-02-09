@@ -1,0 +1,25 @@
+﻿@model Pointwise.Web.Admin.ViewModels.SourceViewModel
+@{
+    ViewBag.Title = "New";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.Id == 0)
+{
+    <h2 class="header">New Source</h2>
+}
+else
+{
+    <h2 class="header">Edit Source</h2>
+}
+
+@using (Html.BeginForm("Save", "Source"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.Name)
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+    </div>
+    @Html.HiddenFor(m => m.Id)
+    <button type="submit" class="btn btn-primary">Save</button>
+    @Html.ActionLink("Cancel", "Index", "Source", null, new { @class = "btn btn-default" })
+}

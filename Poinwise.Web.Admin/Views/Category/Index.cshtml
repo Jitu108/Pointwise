@@ -1,0 +1,32 @@
+﻿@model IEnumerable<Pointwise.Web.Admin.ViewModels.CategoryViewModel>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="header">Categories</h2>
+@Html.ActionLink("NEW CATEGORY", "New", "Category", null, new { @class = "btn btn-primary btn-new" })
+@if (!Model.Any())
+{
+    <div class="bg-info no-item">No categories Exist</div>
+}
+else
+{
+    <div class="row h6 grid-header">
+        <div class="col-md-3">Id</div>
+        <div class="col-md-3">Name</div>
+        <div class="col-md-3">Edit</div>
+        <div class="col-md-3">Delete</div>
+    </div>
+    foreach (var vm in Model)
+    {
+        <div class="row">
+            <div class="col-md-3">@vm.Id</div>
+            <div class="col-md-3">@vm.Name</div>
+            <div class="col-md-3">@Html.ActionLink("Edit", "Edit", "Category", new { id = vm.Id }, null)</div>
+            <div class="col-md-3">@Html.ActionLink("Delete", "Delete", "Category", new { id = vm.Id }, null)</div>
+        </div>
+    }
+
+}
+

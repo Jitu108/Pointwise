@@ -1,0 +1,127 @@
+﻿html {
+    color:gray;
+}
+
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.btn-new {
+    margin: 20px 0;
+}
+
+.no-item {
+    padding: 10px;
+    font-size: 110%;
+    color: #fff;
+}
+
+.grid-header {
+    text-transform: uppercase;
+    color:aqua;
+    font-weight: bold;
+}
+
+.header {
+    color: #FF6384;
+}
+
+
+.field-validation-error {
+    color: #ff7b7b;
+}
+
+.input-validation-error {
+    border: 2px solid #ff7b7b;
+}
+
+.validation-summary-errors {
+    color: #ff7b7b;
+}
+
+.primary-button {
+    background-color: #FF305C;
+    border-color: #FF305C;
+}
+
+    .primary-button:hover {
+        background-color: #D1284C;
+        border-color: #D1284C;
+    }
+
+.secondary-button {
+    background-color: #848482;
+    border-color: #848482;
+}
+
+    .secondary-button:hover {
+        background-color: #6D6D6B;
+        border-color: #6D6D6B;
+    }
+
+
+
+.logo {
+    display: block;
+    width: 40px;
+    height: auto;
+    transform: scale(1);
+    transition: transform 0.5s;
+}
+
+.logo:hover{
+    transform: scale(1.10);
+}
+
+.one {
+    opacity: 0;
+    animation: dot 1.3s infinite;
+    animation-delay: 0.0s;
+}
+
+.two {
+    opacity: 0;
+    animation: dot 1.3s infinite;
+    animation-delay: 0.2s;
+}
+
+.three {
+    opacity: 0;
+    animation: dot 1.3s infinite;
+    animation-delay: 0.3s;
+}
+
+@keyframes dot {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
