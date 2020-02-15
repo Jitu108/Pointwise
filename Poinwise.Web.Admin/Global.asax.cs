@@ -12,8 +12,9 @@ namespace Poinwise.Web.Admin
     {
         protected void Application_Start()
         {
-            var root = new CompositionRoot();
-            ControllerBuilder.Current.SetControllerFactory(root.ControllerFactory);
+            //var root = new CompositionRoot();
+            //ControllerBuilder.Current.SetControllerFactory(root.ControllerFactory);
+
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);

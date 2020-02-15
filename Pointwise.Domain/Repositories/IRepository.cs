@@ -15,6 +15,9 @@ namespace Pointwise.Domain.Repositories
         void Remove(int id);
         void RemoveRange(IEnumerable<TEntity> entities);
 
+        void HardRemove(int id);
+        void HardRemoveRange(IEnumerable<TEntity> entities);
+
         IEntity GetById(int id);
 
         IEntity Update(TEntity entity);

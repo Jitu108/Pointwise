@@ -77,11 +77,29 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
         public void Remove(int id)
         {
             var sEntity = context.Articles.SingleOrDefault(x => x.Id == id);
-            context.Articles.Remove(sEntity);
+            sEntity.IsDeleted = true;
             context.SaveChanges();
         }
 
         public void RemoveRange(IEnumerable<Domain.Models.Article> entities)
+        {
+            var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
+            //context.Articles.RemoveRange(sEntities);
+            foreach(var article in sEntities)
+            {
+                article.IsDeleted = true;
+            }
+            context.SaveChanges();
+        }
+
+        public void HardRemove(int id)
+        {
+            var sEntity = context.Articles.SingleOrDefault(x => x.Id == id);
+            context.Articles.Remove(sEntity);
+            context.SaveChanges();
+        }
+
+        public void HardRemoveRange(IEnumerable<Domain.Models.Article> entities)
         {
             var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
             context.Articles.RemoveRange(sEntities);
