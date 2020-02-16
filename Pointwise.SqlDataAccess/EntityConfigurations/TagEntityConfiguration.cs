@@ -1,30 +1,34 @@
 ﻿using Pointwise.Domain.ValidationRules;
 using Pointwise.SqlDataAccess.Models;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity.ModelConfiguration;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Pointwise.SqlDataAccess.EntityConfigurations
 {
-    class CategoryEntityConfiguration : EntityTypeConfiguration<Category>
+    public class TagEntityConfiguration : EntityTypeConfiguration<Tag>
     {
-        public CategoryEntityConfiguration()
+        public TagEntityConfiguration()
         {
             // Table Name
-            ToTable("Categories");
+            ToTable("Tags");
 
             // PK
             HasKey(x => x.Id);
 
             // Property Configurations
 
-            if (CategoryValidator.Name.IsRequired)
+            if (TagValidator.Name.IsRequired)
             {
                 Property(x => x.Name).IsRequired();
             }
 
             Property(x => x.Name)
-                .HasMaxLength(CategoryValidator.Name.MaxLength);
-            
+                .HasMaxLength(TagValidator.Name.MaxLength);
+
 
             // Common Property Configurations
             Property(x => x.IsDeleted)

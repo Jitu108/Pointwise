@@ -38,5 +38,13 @@ namespace Pointwise.SqlDataAccess.ModelExtensions
                 AssetType = entity.AssetType
             };
         }
+        public static Tag ToPersistentEntity(this Domain.Models.Tag entity)
+        {
+            return new Tag
+            {
+                Id = entity.Id,
+                Name = entity.Name
+            };
+        }
     }
 }

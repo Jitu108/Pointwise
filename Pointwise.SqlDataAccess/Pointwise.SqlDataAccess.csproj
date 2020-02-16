@@ -53,6 +53,7 @@
     <Compile Include="EntityConfigurations\ArticleEntityCofiguration.cs" />
     <Compile Include="EntityConfigurations\CategoryEntityConfiguration.cs" />
     <Compile Include="EntityConfigurations\SourceEntityConfiguration.cs" />
+    <Compile Include="EntityConfigurations\TagEntityConfiguration.cs" />
     <Compile Include="Interfaces\IConvert.cs" />
     <Compile Include="Migrations\202001260039055_AddedSourcesAndCategoriesTables.cs" />
     <Compile Include="Migrations\202001260039055_AddedSourcesAndCategoriesTables.Designer.cs">
@@ -70,16 +71,26 @@
     <Compile Include="Migrations\202001311507249_ChangedColNameDescriptionToSummaryOfTableArticle.Designer.cs">
       <DependentUpon>202001311507249_ChangedColNameDescriptionToSummaryOfTableArticle.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002160856304_AddedTagEntity.cs" />
+    <Compile Include="Migrations\202002160856304_AddedTagEntity.Designer.cs">
+      <DependentUpon>202002160856304_AddedTagEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002160907164_AddedTagEntityConfiguration.cs" />
+    <Compile Include="Migrations\202002160907164_AddedTagEntityConfiguration.Designer.cs">
+      <DependentUpon>202002160907164_AddedTagEntityConfiguration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelExtensions\Extension.cs" />
     <Compile Include="Models\Article.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Source.cs" />
+    <Compile Include="Models\Tag.cs" />
     <Compile Include="SQLContext\PointwiseSqlContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlRepositories\SqlArticleRepository.cs" />
     <Compile Include="SqlRepositories\SqlCategoryRepository.cs" />
     <Compile Include="SqlRepositories\SqlSourceRepository.cs" />
+    <Compile Include="SqlRepositories\SqlTagRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -103,6 +114,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202001311507249_ChangedColNameDescriptionToSummaryOfTableArticle.resx">
       <DependentUpon>202001311507249_ChangedColNameDescriptionToSummaryOfTableArticle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002160856304_AddedTagEntity.resx">
+      <DependentUpon>202002160856304_AddedTagEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002160907164_AddedTagEntityConfiguration.resx">
+      <DependentUpon>202002160907164_AddedTagEntityConfiguration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

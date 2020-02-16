@@ -52,6 +52,7 @@
     <Compile Include="Interfaces\ICategory.cs" />
     <Compile Include="Interfaces\IImage.cs" />
     <Compile Include="Interfaces\ISource.cs" />
+    <Compile Include="Interfaces\ITag.cs" />
     <Compile Include="Interfaces\IUser.cs" />
     <Compile Include="Interfaces\IUserEmail.cs" />
     <Compile Include="Interfaces\IUserPhone.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\Source.cs" />
+    <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserEmail.cs" />
     <Compile Include="Models\UserPhone.cs" />
@@ -69,9 +71,11 @@
     <Compile Include="Repositories\IImageRepository.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Repositories\ISourceRepository.cs" />
+    <Compile Include="Repositories\ITagRepository.cs" />
     <Compile Include="Repositories\IUserEmailRepository.cs" />
     <Compile Include="Repositories\IUserPhoneRepository.cs" />
     <Compile Include="Repositories\IUserRepository.cs" />
+    <Compile Include="ServiceInterfaces\ITagService.cs" />
     <Compile Include="Services\ArticleService.cs" />
     <Compile Include="Services\CategoryService.cs" />
     <Compile Include="ServiceInterfaces\IArticleService.cs" />
@@ -83,12 +87,14 @@
     <Compile Include="ServiceInterfaces\IUserPhoneService.cs" />
     <Compile Include="ServiceInterfaces\IUserService.cs" />
     <Compile Include="Services\SourceService.cs" />
+    <Compile Include="Services\TagService.cs" />
     <Compile Include="Services\UserEmailService.cs" />
     <Compile Include="Services\UserPhoneService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="ValidationRules\CategoryValidator.cs" />
     <Compile Include="ValidationRules\SourceValidator.cs" />
     <Compile Include="ValidationRules\StringLength.cs" />
+    <Compile Include="ValidationRules\TagValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Validators\" />
