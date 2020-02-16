@@ -172,9 +172,10 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\ArticlesController.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Controllers\SourcesController.cs" />
     <Compile Include="DependencyResolution\DefaultRegistry.cs" />
     <Compile Include="DependencyResolution\IoC.cs" />
     <Compile Include="DependencyResolution\StructureMapDependencyScope.cs" />
@@ -274,6 +275,10 @@
     <ProjectReference Include="..\Pointwise.Domain\Pointwise.Domain.csproj">
       <Project>{c7e38474-989f-4a1d-9538-076a7d4e5910}</Project>
       <Name>Pointwise.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Pointwise.SqlDataAccess\Pointwise.SqlDataAccess.csproj">
+      <Project>{9222c8f5-c6a2-48fd-9191-33d90913a576}</Project>
+      <Name>Pointwise.SqlDataAccess</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

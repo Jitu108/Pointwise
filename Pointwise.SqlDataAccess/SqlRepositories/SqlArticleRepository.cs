@@ -1,9 +1,11 @@
-﻿using Pointwise.Domain.Enums;
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+
+using Pointwise.Domain.Enums;
 using Pointwise.Domain.Interfaces;
 using Pointwise.Domain.Repositories;
 using Pointwise.SqlDataAccess.ModelExtensions;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Pointwise.SqlDataAccess.SqlRepositories
 {
@@ -40,13 +42,13 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
         {
             return context.Articles.AsEnumerable().Where(x => x.Content.Contains(contentString)).Select(x => x.ToDomainEntity());
         }
-        public IEnumerable<IArticle> GetArticleBySource(ISource source)
+        public IEnumerable<IArticle> GetArticleBySource(int sourceId)
         {
-            return context.Articles.Where(x => x.Source == source).Select(x => x.ToDomainEntity());
+            return context.Articles.Where(x => x.Source.Id == sourceId).Select(x => x.ToDomainEntity());
         }
-        public IEnumerable<IArticle> GetArticleByCategory(ICategory category)
+        public IEnumerable<IArticle> GetArticleByCategory(int categoryId)
         {
-            return context.Articles.Where(x => x.Category == category).Select(x => x.ToDomainEntity());
+            return context.Articles.Where(x => x.Category.Id == categoryId).Select(x => x.ToDomainEntity());
         }
         public IEnumerable<IArticle> GetArticleByAssetType(ArticleAssociatedAssetType assetType)
         {
@@ -117,6 +119,7 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             sEntity.Content = entity.Content;
             sEntity.Source = entity.Source;
             sEntity.Category = entity.Category;
+            sEntity.LastModifiedOn = DateTime.Now;
 
             context.SaveChanges();
             return sEntity.ToDomainEntity();

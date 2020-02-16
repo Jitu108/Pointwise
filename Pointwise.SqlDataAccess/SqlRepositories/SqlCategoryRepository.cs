@@ -1,9 +1,11 @@
-﻿using Pointwise.Domain.Interfaces;
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+
+using Pointwise.Domain.Interfaces;
 using Pointwise.Domain.Repositories;
 using Pointwise.SqlDataAccess.ModelExtensions;
 using Pointwise.SqlDataAccess.Models;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Pointwise.SqlDataAccess.SqlRepositories
 {
@@ -18,7 +20,8 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
 
         public IEnumerable<ICategory> GetCategories()
         {
-            return context.Categories.AsEnumerable().Select(x => x.ToDomainEntity());
+            var categories = context.Categories.AsEnumerable().Select(x => x.ToDomainEntity()).ToList();
+            return categories;
         }
 
         public ICategory GetById(int id)
@@ -50,6 +53,8 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             sEntity.IsDeleted = true;
             //context.Categories.Remove(sEntity);
             context.SaveChanges();
+            var sEntity1 = context.Categories.SingleOrDefault(x => x.Id == id);
+
         }
 
         public void RemoveRange(IEnumerable<Domain.Models.Category> entities)
@@ -82,6 +87,7 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
         {
             var sEntity = context.Categories.Find(entity.Id);
             sEntity.Name = entity.Name;
+            sEntity.LastModifiedOn = DateTime.Now;
 
             context.SaveChanges();
             return sEntity.ToDomainEntity();

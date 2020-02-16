@@ -48,14 +48,14 @@ namespace Pointwise.Domain.Services
             return repository.GetArticleByContent(contentString);
         }
 
-        public IEnumerable<IArticle> GetArticleBySource(ISource source)
+        public IEnumerable<IArticle> GetArticleBySource(int sourceId)
         {
-            return repository.GetArticleBySource(source);
+            return repository.GetArticleBySource(sourceId);
         }
 
-        public IEnumerable<IArticle> GetArticleByCategory(ICategory category)
+        public IEnumerable<IArticle> GetArticleByCategory(int categoryId)
         {
-            return repository.GetArticleByCategory(category);
+            return repository.GetArticleByCategory(categoryId);
         }
 
         public IEnumerable<IArticle> GetArticleByAssetType(ArticleAssociatedAssetType assetType)

@@ -1,9 +1,11 @@
-﻿using Pointwise.Domain.Interfaces;
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+
+using Pointwise.Domain.Interfaces;
 using Pointwise.Domain.Models;
 using Pointwise.Domain.Repositories;
 using Pointwise.SqlDataAccess.ModelExtensions;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Pointwise.SqlDataAccess.SqlRepositories
 {
@@ -81,6 +83,7 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
         {
             var sEntity = context.Sources.Find(entity.Id);
             sEntity.Name = entity.Name;
+            sEntity.LastModifiedOn = DateTime.Now;
 
             context.SaveChanges();
             return sEntity.ToDomainEntity();

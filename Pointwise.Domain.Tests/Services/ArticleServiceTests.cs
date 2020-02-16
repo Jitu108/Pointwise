@@ -102,26 +102,28 @@ namespace Pointwise.Domain.Tests.Services
         public void GetArticleBySource_WhenCalled_ReturnsArticlesBySource()
         {
             // Arrange
-            var source = new Mock<ISource>();
+            //var source = new Mock<ISource>();
+            var sourceId = 1;
 
             // Act
-            service.GetArticleBySource(source.Object);
+            service.GetArticleBySource(sourceId);
 
             // Assert
-            repository.Verify(x => x.GetArticleBySource(source.Object));
+            repository.Verify(x => x.GetArticleBySource(sourceId));
         }
 
         [Test]
         public void GetArticleByCategory_WhenCalled_ReturnsArticlesByCategory()
         {
             // Arrange
-            var category = new Mock<ICategory>();
+            //var category = new Mock<ICategory>();
+            var categoryId = 1;
 
             // Act
-            service.GetArticleByCategory(category.Object);
+            service.GetArticleByCategory(categoryId);
 
             // Assert
-            repository.Verify(x => x.GetArticleByCategory(category.Object));
+            repository.Verify(x => x.GetArticleByCategory(categoryId));
         }
 
         [Test]

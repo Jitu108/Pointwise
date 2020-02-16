@@ -12,8 +12,8 @@ namespace Pointwise.Domain.Repositories
         IEnumerable<IArticle> GetArticleByTitle(string titleString);
         IEnumerable<IArticle> GetArticleByDescription(string descString);
         IEnumerable<IArticle> GetArticleByContent(string contentString);
-        IEnumerable<IArticle> GetArticleBySource(ISource source);
-        IEnumerable<IArticle> GetArticleByCategory(ICategory category);
+        IEnumerable<IArticle> GetArticleBySource(int sourceId);
+        IEnumerable<IArticle> GetArticleByCategory(int categoryId);
         IEnumerable<IArticle> GetArticleByAssetType(ArticleAssociatedAssetType assetType);
 
     }

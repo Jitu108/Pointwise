@@ -17,7 +17,10 @@ namespace Pointwise.SqlDataAccess.Models
             return new Domain.Models.Source
             {
                 Id = this.Id,
-                Name = this.Name
+                Name = this.Name,
+                CreatedOn = this.CreatedOn,
+                LastModifiedOn = this.LastModifiedOn,
+                IsDeleted = this.IsDeleted
             };
         }
     }

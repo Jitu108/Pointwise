@@ -34,7 +34,10 @@ namespace Pointwise.SqlDataAccess.Models
                 Content = this.Content,
                 Source = this.Source,
                 Category = this.Category,
-                AssetType = this.AssetType
+                AssetType = this.AssetType,
+                CreatedOn = this.CreatedOn,
+                LastModifiedOn = this.LastModifiedOn,
+                IsDeleted = this.IsDeleted
             };
         }
 
