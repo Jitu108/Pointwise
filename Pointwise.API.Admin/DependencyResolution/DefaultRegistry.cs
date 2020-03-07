@@ -46,11 +46,21 @@ namespace Pointwise.API.Admin.DependencyResolution {
             //For<IExample>().Use<Example>();
             connectionString = ConfigurationManager.ConnectionStrings["PointwiseSqlContext"].ConnectionString;
 
-
+            For<IArticleService>().Use<ArticleService>();
             For<ICategoryService>().Use<CategoryService>();
+            For<ISourceService>().Use<SourceService>();
+            For<ITagService>().Use<TagService>();
+            For<IImageService>().Use<ImageService>();
+
             For<IArticleRepository>().Use((IArticleRepository)GetRepository("ArticleRepositoryType"));
             For<ICategoryRepository>().Use((ICategoryRepository)GetRepository("CategoryRepositoryType"));
             For<ISourceRepository>().Use((ISourceRepository)GetRepository("SourceRepositoryType"));
+            For<ITagRepository>().Use((ITagRepository)GetRepository("TagRepositoryType"));
+            For<IImageRepository>().Use((IImageRepository)GetRepository("ImageRepositoryType"));
+            For<IUserRepository>().Use((IUserRepository)GetRepository("UserRepositoryType"));
+            For<IUserRoleRepository>().Use((IUserRoleRepository)GetRepository("UserRoleRepositoryType"));
+            For<IUserTypeRepository>().Use((IUserTypeRepository)GetRepository("UserTypeRepositoryType"));
+           
 
             For<HelpController>().Use(ctx => new HelpController());
         }

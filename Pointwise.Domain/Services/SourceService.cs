@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Pointwise.Domain.Interfaces;
 using Pointwise.Domain.Models;
@@ -12,14 +13,22 @@ namespace Pointwise.Domain.Services
         private readonly ISourceRepository repository;
         public SourceService(ISourceRepository repository)
         {
-            if (repository == null) throw new ArgumentNullException("repository");
-
-            this.repository = repository;
+            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
         public IEnumerable<ISource> GetSources()
         {
-            return repository.GetSources();
+            return repository.GetAll().Where(x => !x.IsDeleted);
+        }
+
+        public IEnumerable<ISource> GetSourcesAll()
+        {
+            return repository.GetAll();
+        }
+
+        public IEnumerable<ISource> GetBySearchString(string searchString)
+        {
+            return this.GetSources().Where(x => x.Name.Contains(searchString));
         }
 
         public ISource GetById(int id)
@@ -37,14 +46,29 @@ namespace Pointwise.Domain.Services
             return repository.AddRange(entities);
         }
 
-        public void Remove(int id)
+        public void Delete(int id)
         {
-            repository.Remove(id);
+            repository.Delete(id);
         }
 
-        public void RemoveRange(IEnumerable<Source> entities)
+        public void DeleteRange(IEnumerable<Source> entities)
         {
-            repository.RemoveRange(entities);
+            repository.DeleteRange(entities);
+        }
+
+        public void SoftDelete(int id)
+        {
+            repository.SoftDelete(id);
+        }
+
+        public void UndoSoftDelete(int id)
+        {
+            repository.UndoSoftDelete(id);
+        }
+
+        public void SoftDeleteRange(IEnumerable<Source> entities)
+        {
+            repository.SoftDeleteRange(entities);
         }
 
         public ISource Update(Source entity)

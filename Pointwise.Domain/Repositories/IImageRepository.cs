@@ -1,19 +1,13 @@
 ﻿using Pointwise.Domain.Interfaces;
 using System.Collections.Generic;
 using Pointwise.Domain.Enums;
+using Pointwise.Domain.Models;
 
 namespace Pointwise.Domain.Repositories
 {
-    public interface IImageRepository
+    public interface IImageRepository : IRepository<IImage, Image>
     {
-        IEnumerable<IImage> GetImages();
-        IImage GetImageById(int id);
-
-        IEnumerable<IImage> GetImageByName(string searchString);
-
-        IEnumerable<IImage> GetImageByName(string searchString, Extension extension);
-
-        IEnumerable<IImage> GetImageByExtension(Extension extension);
-
+        IEnumerable<IImage> AddRange(IEnumerable<Image> images, int? articleId);
+        IEnumerable<IImage> Update(IEnumerable<IImage> entities);
     }
 }

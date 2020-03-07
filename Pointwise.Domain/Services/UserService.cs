@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Pointwise.Domain.Interfaces;
 using Pointwise.Domain.Repositories;
 using Pointwise.Domain.ServiceInterfaces;
@@ -12,37 +13,37 @@ namespace Pointwise.Domain.Services
 
         public UserService(IUserRepository repository)
         {
-            if (repository == null) throw new ArgumentNullException("repository");
-
-            this.repository = repository;
+            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
-        public IEnumerable<IUser> GetAllUsers()
+        public IEnumerable<IUser> GetUsers()
         {
-            return repository.GetAllUsers();
+            return repository.GetAll();
         }
-        public IUser GetUserById(int id)
+        public IUser GetById(int id)
         {
-            return repository.GetUserById(id);
+            return repository.GetById(id);
         }
         public IEnumerable<IUser> GetUserByName(string nameString)
         {
-            return repository.GetUserByName(nameString);
+            return repository.GetAll().Where(x => x.FirstName.Contains(nameString) || x.MiddleName.Contains(nameString) || x.LastName.Contains(nameString)); 
         }
         public IEnumerable<IUser> GetUserByEmailAddress(string emailString)
         {
-            return repository.GetUserByEmailAddress(emailString);
+            return repository.GetAll().Where(x => x.EmailAddress.Contains(emailString));
         }
         public IEnumerable<IUser> GetUserByPhoneNumber(string phoneString)
         {
-            return repository.GetUserByPhoneNumber(phoneString);
+            return repository.GetAll().Where(x => x.PhoneNumber.Contains(phoneString));
         }
         public IEnumerable<IUser> GetBlockedUsers()
         {
-            return repository.GetBlockedUsers();
+            return repository.GetAll().Where(x => x.IsBlocked);
         }
         public bool UserIsBlocked(IUser user)
         {
-            return repository.UserIsBlocked(user);
+            if (user == null) throw new ArgumentNullException(nameof(user));
+
+            return repository.GetById(user.Id).IsBlocked;
         }
     }
 }

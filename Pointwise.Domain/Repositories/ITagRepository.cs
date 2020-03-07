@@ -6,6 +6,7 @@ namespace Pointwise.Domain.Repositories
 {
     public interface ITagRepository : IRepository<ITag, Tag>
     {
-        IEnumerable<ITag> GetTags();
+        ITag GetByName(string name);
+        IEnumerable<ITag> GetByName(IEnumerable<string> names);
     }
 }

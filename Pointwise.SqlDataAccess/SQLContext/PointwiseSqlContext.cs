@@ -32,6 +32,9 @@ namespace Pointwise.SqlDataAccess
             modelBuilder.Configurations.Add(new CategoryEntityConfiguration());
             modelBuilder.Configurations.Add(new SourceEntityConfiguration());
             modelBuilder.Configurations.Add(new TagEntityConfiguration());
+            modelBuilder.Configurations.Add(new UserTypeEntityConfiguration());
+            modelBuilder.Configurations.Add(new UserRoleEntityConfiguration());
+            modelBuilder.Configurations.Add(new UserEntityConfiguration());
         }
 
         // Add a DbSet for each entity type that you want to include in your model. For more information 
@@ -41,6 +44,10 @@ namespace Pointwise.SqlDataAccess
         public virtual DbSet<Source> Sources { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
+        public virtual DbSet<SqlUserType> UserTypes { get; set; }
+        public virtual DbSet<SqlUserRole> UserRoles { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Image> Images { get; set; }
 
     }
 

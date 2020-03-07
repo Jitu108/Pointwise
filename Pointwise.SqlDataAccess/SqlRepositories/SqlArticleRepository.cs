@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -6,10 +7,11 @@ using Pointwise.Domain.Enums;
 using Pointwise.Domain.Interfaces;
 using Pointwise.Domain.Repositories;
 using Pointwise.SqlDataAccess.ModelExtensions;
+using Pointwise.SqlDataAccess.Models;
 
 namespace Pointwise.SqlDataAccess.SqlRepositories
 {
-    public class SqlArticleRepository : IArticleRepository
+    public sealed class SqlArticleRepository : IArticleRepository, IDisposable
     {
         private readonly PointwiseSqlContext context;
 
@@ -18,50 +20,53 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             context = new PointwiseSqlContext(connectionString);
         }
 
-        public IEnumerable<IArticle> GetAllArticles()
+        public IEnumerable<IArticle> GetAll()
         {
-            return context.Articles.AsEnumerable().Select(x => x.ToDomainEntity());
+            var images = context.Images.ToList();
+
+            var articles = context.Articles
+                .Include(x => x.SqlSource)
+                .Include(x => x.SqlCategory)
+                .Include(x => x.SqlTags).AsNoTracking()
+                .Include(x => x.SqlImages).AsNoTracking()
+                .AsEnumerable().Select(x => x.ToDomainEntity()).ToList();
+            return articles;
         }
         public IArticle GetById(int id)
         {
-            return context.Articles.Find(id).ToDomainEntity();
+            var article = context.Articles
+                .Include(x => x.SqlSource)
+                .Include(x => x.SqlCategory)
+                .Include(x => x.SqlTags).AsNoTracking()
+                .Include(x=> x.SqlImages).AsNoTracking()
+                .Where(x => x.Id == id).FirstOrDefault();
+            return article.ToDomainEntity();
         }
-        public IEnumerable<IArticle> GetArticlesByAuthor(string author)
-        {
-            return context.Articles.AsEnumerable().Where(x => x.Author.Contains(author)).Select(x => x.ToDomainEntity());
-        }
-        public IEnumerable<IArticle> GetArticleByTitle(string titleString)
-        {
-            return context.Articles.AsEnumerable().Where(x => x.Title.Contains(titleString)).Select(x => x.ToDomainEntity());
-        }
-        public IEnumerable<IArticle> GetArticleByDescription(string descString)
-        {
-            return context.Articles.AsEnumerable().Where(x => x.Summary.Contains(descString)).Select(x => x.ToDomainEntity());
-        }
-        public IEnumerable<IArticle> GetArticleByContent(string contentString)
-        {
-            return context.Articles.AsEnumerable().Where(x => x.Content.Contains(contentString)).Select(x => x.ToDomainEntity());
-        }
-        public IEnumerable<IArticle> GetArticleBySource(int sourceId)
-        {
-            return context.Articles.Where(x => x.Source.Id == sourceId).Select(x => x.ToDomainEntity());
-        }
-        public IEnumerable<IArticle> GetArticleByCategory(int categoryId)
-        {
-            return context.Articles.Where(x => x.Category.Id == categoryId).Select(x => x.ToDomainEntity());
-        }
-        public IEnumerable<IArticle> GetArticleByAssetType(ArticleAssociatedAssetType assetType)
-        {
-            return context.Articles.Where(x => x.AssetType == assetType).Select(x => x.ToDomainEntity());
-        }
-
-
-
 
         public IArticle Add(Domain.Models.Article entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            //context.Sources.Attach((Source)entity.Source);
+
+            var tagIds = entity.Tags != null
+                ? entity.Tags.Select(x => x.Id) 
+                : new List<int>();
+
             var sEntity = entity.ToPersistentEntity();
+
+            sEntity.Category = entity.Category != null 
+                ? context.Categories.Where(x => x.Id == entity.Category.Id).FirstOrDefault()
+                : null;
+
+            sEntity.Source = entity.Source != null 
+                ? context.Sources.Where(x => x.Id == entity.Source.Id).FirstOrDefault()
+                : null;
+
+            sEntity.SqlTags =  context.Tags.Where(x => tagIds.Contains(x.Id)).Select(x => x).ToList();
+
             var insertedRow = context.Articles.Add(sEntity);
+
             context.SaveChanges();
 
             return insertedRow.ToDomainEntity();
@@ -76,17 +81,23 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             return insertedRows.Select(x => x.ToDomainEntity()).AsEnumerable();
         }
 
-        public void Remove(int id)
+        public void SoftDelete(int id)
         {
             var sEntity = context.Articles.SingleOrDefault(x => x.Id == id);
             sEntity.IsDeleted = true;
             context.SaveChanges();
         }
 
-        public void RemoveRange(IEnumerable<Domain.Models.Article> entities)
+        public void UndoSoftDelete(int id)
+        {
+            var sEntity = context.Articles.SingleOrDefault(x => x.Id == id);
+            sEntity.IsDeleted = false;
+            context.SaveChanges();
+        }
+
+        public void SoftDeleteRange(IEnumerable<Domain.Models.Article> entities)
         {
             var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
-            //context.Articles.RemoveRange(sEntities);
             foreach(var article in sEntities)
             {
                 article.IsDeleted = true;
@@ -94,14 +105,14 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             context.SaveChanges();
         }
 
-        public void HardRemove(int id)
+        public void Delete(int id)
         {
             var sEntity = context.Articles.SingleOrDefault(x => x.Id == id);
             context.Articles.Remove(sEntity);
             context.SaveChanges();
         }
 
-        public void HardRemoveRange(IEnumerable<Domain.Models.Article> entities)
+        public void DeleteRange(IEnumerable<Domain.Models.Article> entities)
         {
             var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
             context.Articles.RemoveRange(sEntities);
@@ -110,20 +121,39 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
 
         public IArticle Update(Domain.Models.Article entity)
         {
-            var sEntity = context.Articles.Find(entity.Id);
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            var sEntity = context.Articles
+                .Include(x => x.SqlTags)
+                .Where(x => x.Id == entity.Id)
+                .FirstOrDefault();
+
+            var tagsToInsert = entity.Tags
+                .Select(x => x.Id)
+                .ToList();
+
             sEntity.Author = entity.Author;
             sEntity.Title = entity.Title;
             sEntity.Summary = entity.Summary;
             sEntity.Url = entity.Url;
             sEntity.PublicationDate = entity.PublicationDate;
             sEntity.Content = entity.Content;
-            sEntity.Source = entity.Source;
-            sEntity.Category = entity.Category;
+            sEntity.Synopsis = entity.Synopsis;
+            sEntity.SourceId = entity.Source.Id;
+            sEntity.CategoryId = entity.Category.Id;
+            sEntity.SqlTags = context.Tags
+                .Where(x => tagsToInsert.Contains(x.Id))
+                .ToList();
+
             sEntity.LastModifiedOn = DateTime.Now;
 
             context.SaveChanges();
-            return sEntity.ToDomainEntity();
+            return GetById(sEntity.Id);
         }
 
+        public void Dispose()
+        {
+            context.Dispose();
+        }
     }
 }

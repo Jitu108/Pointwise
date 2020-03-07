@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Pointwise.Domain.Enums;
+using System.IO;
+using System.Web;
+using Pointwise.Domain.Helper;
 using Pointwise.Domain.Interfaces;
+using Pointwise.Domain.Models;
 using Pointwise.Domain.Repositories;
 using Pointwise.Domain.ServiceInterfaces;
 
@@ -13,34 +16,92 @@ namespace Pointwise.Domain.Services
 
         public ImageService(IImageRepository repository)
         {
-            if (repository == null) throw new ArgumentNullException("repository");
-
-            this.repository = repository;
+            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public IEnumerable<IImage> GetImages()
+        public string GetImageById(int id)
         {
-            return repository.GetImages();
+            var image = repository.GetById(id);
+            return GetImageString((Image)image);
         }
 
-        public IImage GetImageById(int id)
+        public IImage SaveImage(HttpPostedFileBase postedFile)
         {
-            return repository.GetImageById(id);
+            if (postedFile == null) throw new ArgumentNullException(nameof(postedFile));
+
+            byte[] bytes;
+            using (BinaryReader br = new BinaryReader(postedFile.InputStream))
+            {
+                bytes = br.ReadBytes(postedFile.ContentLength);
+            }
+            var image = new Image
+            {
+                Name = System.IO.Path.GetFileName(postedFile.FileName),
+                ContentType = postedFile.ContentType,
+                Extension = FileHelper.GetExtension(postedFile.FileName),
+                Data = bytes
+            };
+
+            return repository.Add(image);
         }
 
-        public IEnumerable<IImage> GetImageByName(string searchString)
+        public static string GetImageString(Image image)
         {
-            return repository.GetImageByName(searchString);
+            return "data:image/png;base64," + Convert.ToBase64String(image.Data, 0, image.Data.Length);
         }
 
-        public IEnumerable<IImage> GetImageByName(string searchString, Extension extension)
+        public IImage Add(Image entity)
         {
-            return repository.GetImageByName(searchString, extension);
+            return repository.Add(entity);
         }
 
-        public IEnumerable<IImage> GetImageByExtension(Extension extension)
+        public IEnumerable<IImage> AddRange(IEnumerable<Image> entities)
         {
-            return repository.GetImageByExtension(extension);
+            return repository.AddRange(entities);
+        }
+
+        public IEnumerable<IImage> AddRange(IEnumerable<Image> entities, int articleId)
+        {
+            return repository.AddRange(entities, articleId);
+        }
+
+        public void Delete(int id)
+        {
+            repository.Delete(id);
+        }
+
+        public void DeleteRange(IEnumerable<Image> entities)
+        {
+            repository.DeleteRange(entities);
+        }
+
+        public void SoftDelete(int id)
+        {
+            repository.SoftDelete(id);
+        }
+
+        public void UndoSoftDelete(int id)
+        {
+            repository.UndoSoftDelete(id);
+        }
+
+        public void SoftDeleteRange(IEnumerable<Image> entities)
+        {
+            repository.SoftDeleteRange(entities);
+        }
+
+        public IImage Update(Image entity)
+        {
+            return repository.Update(entity);
+        }
+
+        public IEnumerable<IImage> Update(IEnumerable<Image> entities, int articleId)
+        {
+            foreach(var entity in entities)
+            {
+                entity.ArticleId = articleId;
+            }
+            return repository.Update(entities);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Pointwise.Domain.Interfaces;
 using Pointwise.Domain.Models;
 using Pointwise.SqlDataAccess.Interfaces;
+using System.Collections.Generic;
 
 namespace Pointwise.SqlDataAccess.Models
 {
@@ -8,6 +9,12 @@ namespace Pointwise.SqlDataAccess.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public IList<Article> SqlArticles { get; set; }
+        public IList<IArticle> Articles
+        {
+            get { return (IList<IArticle>)SqlArticles; }
+            set { SqlArticles = (IList<Article>)value; }
+        }
     }
 
     public partial class Category : IConvert<Domain.Models.Category>
@@ -23,14 +30,5 @@ namespace Pointwise.SqlDataAccess.Models
                 IsDeleted = this.IsDeleted
             };
         }
-
-        //public static Category ToPersistentEntity(ICategory entity)
-        //{
-        //    return new Category
-        //    {
-        //        Id = entity.Id,
-        //        Name = entity.Name
-        //    };
-        //}
     }
 }

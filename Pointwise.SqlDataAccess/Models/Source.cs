@@ -1,6 +1,7 @@
 ﻿using Pointwise.Domain.Interfaces;
 using Pointwise.Domain.Models;
 using Pointwise.SqlDataAccess.Interfaces;
+using System.Collections.Generic;
 
 namespace Pointwise.SqlDataAccess.Models
 {
@@ -8,6 +9,12 @@ namespace Pointwise.SqlDataAccess.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public IList<Article> SqlArticles { get; set; }
+        public IList<IArticle> Articles
+        {
+            get { return (IList<IArticle>)SqlArticles; }
+            set { SqlArticles = (IList<Article>)value; }
+        }
     }
 
     public partial class Source : IConvert<Domain.Models.Source>
@@ -18,6 +25,7 @@ namespace Pointwise.SqlDataAccess.Models
             {
                 Id = this.Id,
                 Name = this.Name,
+
                 CreatedOn = this.CreatedOn,
                 LastModifiedOn = this.LastModifiedOn,
                 IsDeleted = this.IsDeleted

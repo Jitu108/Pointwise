@@ -11,5 +11,6 @@ namespace Pointwise.Domain.Interfaces
         byte[] Data { get; set; }
         Extension Extension { get; set; }
         ImageSaveTo SavedTo { get; set; }
+        int ArticleId { get; set; }
     }
 }

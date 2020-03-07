@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Web;
 using Pointwise.Domain.Enums;
+using Pointwise.Domain.Helper;
 
 namespace Pointwise.Domain.Models
 {
@@ -14,7 +15,9 @@ namespace Pointwise.Domain.Models
         public string ContentType { get; set; }
         public byte[] Data { get; set; }
         public Extension Extension { get; set; }
-        public ImageSaveTo SavedTo { get; set; }
+        public ImageSaveTo SavedTo { get; set; } = ImageSaveTo.Database;
+
+        public int ArticleId { get; set; }
 
 
         public static string GetImageString(Image image)
@@ -22,22 +25,24 @@ namespace Pointwise.Domain.Models
             return "data:image/png;base64," + Convert.ToBase64String(image.Data, 0, image.Data.Length);
         }
 
-        public static void SaveImage(HttpPostedFileBase postedFile)
-    {
-            byte[] bytes;
-            using (BinaryReader br = new BinaryReader(postedFile.InputStream))
-            {
-                bytes = br.ReadBytes(postedFile.ContentLength);
-            }
-            //FilesEntities entities = new FilesEntities();
-            //entities.tblFiles.Add(new tblFile
-            //{
-            //    Name = System.IO.Path.GetFileName(postedFile.FileName),
-            //    ContentType = postedFile.ContentType,
-            //    Data = bytes
-            //});
-            //entities.SaveChanges();
-        }
+    //    public static void SaveImage(HttpPostedFileBase postedFile)
+    //{
+    //        byte[] bytes;
+    //        using (BinaryReader br = new BinaryReader(postedFile.InputStream))
+    //        {
+    //            bytes = br.ReadBytes(postedFile.ContentLength);
+    //        }
+    //        //FilesEntities entities = new FilesEntities();
+    //        //entities.tblFiles.Add(
+    //        var image = new Image
+    //        {
+    //            Name = System.IO.Path.GetFileName(postedFile.FileName),
+    //            ContentType = postedFile.ContentType,
+    //            Extension = FileHelper.GetExtension(postedFile.FileName),
+    //            Data = bytes
+    //        };
+    //        //entities.SaveChanges();
+    //    }
 
         public static void SaveImage(HttpPostedFileBase postedFile, string path)
         {

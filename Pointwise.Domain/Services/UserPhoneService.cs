@@ -12,9 +12,7 @@ namespace Pointwise.Domain.Services
 
         public UserPhoneService(IUserPhoneRepository repository)
         {
-            if (repository == null) throw new ArgumentNullException("repository");
-
-            this.repository = repository;
+            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
         public IEnumerable<IUserPhone> GetAllUserPhones(int userId)
         {

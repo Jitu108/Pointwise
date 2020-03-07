@@ -4,6 +4,7 @@ using Pointwise.Domain.Repositories;
 using Pointwise.Domain.ServiceInterfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Pointwise.Domain.Services
 {
@@ -12,19 +13,32 @@ namespace Pointwise.Domain.Services
         private readonly ITagRepository repository;
         public TagService(ITagRepository repository)
         {
-            if (repository == null) throw new ArgumentNullException("repository");
-
-            this.repository = repository;
+            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
         public IEnumerable<ITag> GetTags()
         {
-            return repository.GetTags();
+            return repository.GetAll().Where(x => !x.IsDeleted);
+        }
+
+        public IEnumerable<ITag> GetTagsAll()
+        {
+            return repository.GetAll();
+        }
+
+        public IEnumerable<ITag> GetBySearchString(string searchString)
+        {
+            return this.GetTags().Where(x => x.Name.Contains(searchString));
         }
 
         public ITag GetById(int id)
         {
             return repository.GetById(id);
+        }
+
+        public IEnumerable<ITag> GetByName(IEnumerable<string> names)
+        {
+            return repository.GetByName(names);
         }
 
         public ITag Add(Tag entity)
@@ -37,14 +51,29 @@ namespace Pointwise.Domain.Services
             return repository.AddRange(entities);
         }
 
-        public void Remove(int id)
+        public void Delete(int id)
         {
-            repository.Remove(id);
+            repository.Delete(id);
         }
 
-        public void RemoveRange(IEnumerable<Tag> entities)
+        public void DeleteRange(IEnumerable<Tag> entities)
         {
-            repository.RemoveRange(entities);
+            repository.DeleteRange(entities);
+        }
+
+        public void SoftDelete(int id)
+        {
+            repository.SoftDelete(id);
+        }
+
+        public void UndoSoftDelete(int id)
+        {
+            repository.UndoSoftDelete(id);
+        }
+
+        public void SoftDeleteRange(IEnumerable<Tag> entities)
+        {
+            repository.SoftDeleteRange(entities);
         }
 
         public ITag Update(Tag entity)

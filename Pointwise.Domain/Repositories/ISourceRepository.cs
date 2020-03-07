@@ -6,6 +6,5 @@ namespace Pointwise.Domain.Repositories
 {
     public interface ISourceRepository : IRepository<ISource, Source>
     {
-        IEnumerable<ISource> GetSources();
     }
 }

@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Pointwise.Domain.Enums
+﻿namespace Pointwise.Domain.Enums
 {
     public enum ArticleAssociatedAssetType
     {
-        Image,
-        Video
+        None = 0,
+        Image = 1,
+        Video = 2
     }
 }

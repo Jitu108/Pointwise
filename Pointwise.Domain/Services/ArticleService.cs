@@ -5,87 +5,121 @@ using Pointwise.Domain.Repositories;
 using Pointwise.Domain.ServiceInterfaces;
 using Pointwise.Domain.Enums;
 using Pointwise.Domain.Models;
+using System.Linq;
 
 namespace Pointwise.Domain.Services
 {
     public class ArticleService : IArticleService
     {
-        private readonly IArticleRepository repository;
+        private readonly IArticleRepository articleRepository;
+        private readonly ITagService tagService;
+        private readonly IImageService imageService;
 
-        public ArticleService(IArticleRepository repository)
+        public ArticleService(
+            IArticleRepository articleRepository
+            , ITagService tagService
+            , IImageService imageService
+            )
         {
-            if (repository == null) throw new ArgumentNullException("repository");
-            this.repository = repository;
+            this.articleRepository = articleRepository ?? throw new ArgumentNullException(nameof(articleRepository));
+            this.tagService = tagService ?? throw new ArgumentNullException(nameof(tagService));
+            this.imageService = imageService ?? throw new ArgumentNullException(nameof(imageService));
         }
 
         public IEnumerable<IArticle> GetAllArticles()
         {
-            return repository.GetAllArticles();
+            return articleRepository.GetAll();
         }
 
         public IArticle GetById(int id)
         {
-            return repository.GetById(id);
+            return articleRepository.GetById(id);
         }
 
         public IEnumerable<IArticle> GetArticlesByAuthor(string author)
         {
-            return repository.GetArticlesByAuthor(author);
+            return articleRepository.GetAll().Where(x => x.Author.Contains(author));
         }
 
         public IEnumerable<IArticle> GetArticleByTitle(string titleString)
         {
-            return repository.GetArticleByTitle(titleString);
+            return articleRepository.GetAll().Where(x => x.Title.Contains(titleString));
         }
 
         public IEnumerable<IArticle> GetArticleByDescription(string descString)
         {
-            return repository.GetArticleByDescription(descString);
+            return articleRepository.GetAll().Where(x => x.Summary.Contains(descString));
         }
 
         public IEnumerable<IArticle> GetArticleByContent(string contentString)
         {
-            return repository.GetArticleByContent(contentString);
+            return articleRepository.GetAll().Where(x => x.Content.Contains(contentString));
         }
 
         public IEnumerable<IArticle> GetArticleBySource(int sourceId)
         {
-            return repository.GetArticleBySource(sourceId);
+            return articleRepository.GetAll().Where(x => x.Source.Id == sourceId);
         }
 
         public IEnumerable<IArticle> GetArticleByCategory(int categoryId)
         {
-            return repository.GetArticleByCategory(categoryId);
+            return articleRepository.GetAll().Where(x => x.Category.Id == categoryId);
         }
 
         public IEnumerable<IArticle> GetArticleByAssetType(ArticleAssociatedAssetType assetType)
         {
-            return repository.GetArticleByAssetType(assetType);
+            return articleRepository.GetAll().Where(x => x.AssetType == assetType);
         }
 
         public IArticle Add(Article entity)
         {
-            return repository.Add(entity);
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            entity.Tags = tagService.GetByName(entity.Tags.Select(x => x.Name)).ToList();
+            
+            var addedArticle = articleRepository.Add(entity);
+
+            return addedArticle;
         }
 
         public IEnumerable<IArticle> AddRange(IEnumerable<Article> entities)
         {
-            return repository.AddRange(entities);
+            return articleRepository.AddRange(entities);
         }
 
-        public void Remove(int id)
+        public void SoftDelete(int id)
         {
-            repository.Remove(id);
+            articleRepository.SoftDelete(id);
         }
 
-        public void RemoveRange(IEnumerable<Article> entities)
+        public void UndoSoftDelete(int id)
         {
-            repository.RemoveRange(entities);
+            articleRepository.UndoSoftDelete(id);
+        }
+
+        public void SoftDeleteRange(IEnumerable<Article> entities)
+        {
+            articleRepository.SoftDeleteRange(entities);
+        }
+
+        public void Delete(int id)
+        {
+            articleRepository.Delete(id);
+        }
+
+        public void DeleteRange(IEnumerable<Article> entities)
+        {
+            articleRepository.DeleteRange(entities);
         }
 
         public IArticle Update(Article entity)
         {
-            return repository.Update(entity);
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            imageService.Update(entity.Images.Cast<Image>(), entity.Id);
+
+            entity.Tags = tagService.GetByName(entity.Tags.Select(x => x.Name)).ToList();
+            return articleRepository.Update(entity);
         }
     }
 }

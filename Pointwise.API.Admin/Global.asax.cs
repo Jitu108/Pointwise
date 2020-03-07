@@ -14,6 +14,7 @@ namespace Pointwise.API.Admin
     {
         protected void Application_Start()
         {
+            GlobalConfiguration.Configuration.Formatters.FormUrlEncodedFormatter.ReadBufferSize = 256 * 1024; // 256 KB
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

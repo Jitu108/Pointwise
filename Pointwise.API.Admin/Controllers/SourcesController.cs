@@ -9,6 +9,7 @@ using System.Web.Http;
 
 namespace Pointwise.API.Admin.Controllers
 {
+    [RoutePrefix("api/Sources")]
     public class SourcesController : ApiController
     {
         private readonly ISourceService sourceService;
@@ -21,6 +22,21 @@ namespace Pointwise.API.Admin.Controllers
         public IEnumerable<ISource> Get()
         {
             return sourceService.GetSources().ToList();
+        }
+
+        /// <summary>
+        /// Get All Categories. Including soft-deleted ones.
+        /// </summary>
+        /// <returns></returns>
+        [Route("All")]
+        public IEnumerable<ISource> GetAll()
+        {
+            return sourceService.GetSourcesAll().ToList();
+        }
+
+        public IEnumerable<ISource> GetBySearchString(string searchString)
+        {
+            return sourceService.GetBySearchString(searchString).ToList();
         }
 
         // GET: api/Sources/5
@@ -43,16 +59,45 @@ namespace Pointwise.API.Admin.Controllers
         // PUT: api/Sources/5
         public ISource Put(int id, [FromBody]Source source)
         {
-            if (!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            if (!ModelState.IsValid) throw new HttpResponseException(HttpStatusCode.BadRequest);
+            if (source == null) throw new ArgumentNullException(nameof(source));
+
             source.Id = id;
             return sourceService.Update(source);
         }
 
         // DELETE: api/Sources/5
+        [HttpDelete]
         public void Delete(int id)
         {
-            sourceService.Remove(id);
+            sourceService.Delete(id);
+        }
+
+        [HttpDelete]
+        public void Delete([FromBody]IEnumerable<Source> sources)
+        {
+            sourceService.DeleteRange(sources);
+        }
+
+        [HttpDelete]
+        [Route("SoftDelete")]
+        public void SoftDelete(int id)
+        {
+            sourceService.SoftDelete(id);
+        }
+
+        [HttpDelete]
+        [Route("UndoSoftDelete")]
+        public void UndoSoftDelete(int id)
+        {
+            sourceService.UndoSoftDelete(id);
+        }
+
+        [HttpDelete]
+        [Route("SoftDeleteRange")]
+        public void SoftDelete([FromBody]IEnumerable<Source> sources)
+        {
+            sourceService.SoftDeleteRange(sources);
         }
     }
 }

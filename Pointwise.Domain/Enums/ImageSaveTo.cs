@@ -2,8 +2,9 @@
 {
     public enum ImageSaveTo
     {
+        None = 0,
         Database = 1,
-        FileSystem,
-        Cloud
+        FileSystem = 2,
+        Cloud = 3
     }
 }

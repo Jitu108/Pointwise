@@ -6,10 +6,12 @@ using Pointwise.Domain.Interfaces;
 using Pointwise.Domain.Models;
 using Pointwise.Domain.Repositories;
 using Pointwise.SqlDataAccess.ModelExtensions;
+using System.Data.Entity.Validation;
+using System.Diagnostics;
 
 namespace Pointwise.SqlDataAccess.SqlRepositories
 {
-    public class SqlSourceRepository : ISourceRepository
+    public sealed class SqlSourceRepository : ISourceRepository, IDisposable
     {
         private readonly PointwiseSqlContext context;
 
@@ -18,7 +20,7 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             context = new PointwiseSqlContext(connectionString);
         }
 
-        public IEnumerable<ISource> GetSources()
+        public IEnumerable<ISource> GetAll()
         {
             return context.Sources.AsEnumerable().Select(x => x.ToDomainEntity());
         }
@@ -30,11 +32,28 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
 
         public ISource Add(Source entity)
         {
-            var sEntity = entity.ToPersistentEntity();
-            var insertedRow = context.Sources.Add(sEntity);
-            context.SaveChanges();
+            try
+            {
+                var sEntity = entity.ToPersistentEntity();
+                var insertedRow = context.Sources.Add(sEntity);
+                context.SaveChanges();
 
-            return insertedRow.ToDomainEntity();
+                return insertedRow.ToDomainEntity();
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Debug.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Debug.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
+            }
         }
 
         public IEnumerable<ISource> AddRange(IEnumerable<Source> entities)
@@ -46,18 +65,23 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             return insertedRows.Select(x => x.ToDomainEntity()).AsEnumerable();
         }
 
-        public void Remove(int id)
+        public void SoftDelete(int id)
         {
             var sEntity = context.Sources.SingleOrDefault(x => x.Id == id);
-            //context.Sources.Remove(sEntity);
             sEntity.IsDeleted = true;
             context.SaveChanges();
         }
 
-        public void RemoveRange(IEnumerable<Source> entities)
+        public void UndoSoftDelete(int id)
+        {
+            var sEntity = context.Sources.SingleOrDefault(x => x.Id == id);
+            sEntity.IsDeleted = false;
+            context.SaveChanges();
+        }
+
+        public void SoftDeleteRange(IEnumerable<Source> entities)
         {
             var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
-            //context.Sources.RemoveRange(sEntities);
             foreach(var source in sEntities)
             {
                 source.IsDeleted = true;
@@ -65,14 +89,14 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             context.SaveChanges();
         }
 
-        public void HardRemove(int id)
+        public void Delete(int id)
         {
             var sEntity = context.Sources.SingleOrDefault(x => x.Id == id);
             context.Sources.Remove(sEntity);
             context.SaveChanges();
         }
 
-        public void HardRemoveRange(IEnumerable<Source> entities)
+        public void DeleteRange(IEnumerable<Source> entities)
         {
             var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
             context.Sources.RemoveRange(sEntities);
@@ -81,12 +105,19 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
 
         public ISource Update(Source entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var sEntity = context.Sources.Find(entity.Id);
             sEntity.Name = entity.Name;
             sEntity.LastModifiedOn = DateTime.Now;
 
             context.SaveChanges();
             return sEntity.ToDomainEntity();
+        }
+
+        public void Dispose()
+        {
+            context.Dispose();
         }
     }
 }

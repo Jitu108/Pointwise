@@ -13,6 +13,13 @@ namespace Pointwise.SqlDataAccess.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+
+        public IList<Article> SqlArticles { get; set; }
+        public IList<IArticle> Articles 
+        {
+            get { return (IList<IArticle>)SqlArticles; }
+            set { SqlArticles = (IList<Article>)value; }
+        }
     }
 
     public partial class Tag : IConvert<Domain.Models.Tag>

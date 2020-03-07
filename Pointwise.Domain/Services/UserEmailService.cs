@@ -11,9 +11,7 @@ namespace Pointwise.Domain.Services
         private readonly IUserEmailRepository repository;
         public UserEmailService(IUserEmailRepository repository)
         {
-            if (repository == null) throw new ArgumentNullException("repository");
-
-            this.repository = repository;
+            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
         public IEnumerable<IUserEmail> GetAllUserEmails(int userId)
         {

@@ -1,5 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props')" />
+  <Import Project="..\packages\Microsoft.NetFramework.Analyzers.2.9.8\build\Microsoft.NetFramework.Analyzers.props" Condition="Exists('..\packages\Microsoft.NetFramework.Analyzers.2.9.8\build\Microsoft.NetFramework.Analyzers.props')" />
+  <Import Project="..\packages\Microsoft.NetCore.Analyzers.2.9.8\build\Microsoft.NetCore.Analyzers.props" Condition="Exists('..\packages\Microsoft.NetCore.Analyzers.2.9.8\build\Microsoft.NetCore.Analyzers.props')" />
+  <Import Project="..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\build\Microsoft.CodeQuality.Analyzers.props" Condition="Exists('..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\build\Microsoft.CodeQuality.Analyzers.props')" />
+  <Import Project="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -12,6 +17,8 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,6 +61,9 @@
     <Compile Include="EntityConfigurations\CategoryEntityConfiguration.cs" />
     <Compile Include="EntityConfigurations\SourceEntityConfiguration.cs" />
     <Compile Include="EntityConfigurations\TagEntityConfiguration.cs" />
+    <Compile Include="EntityConfigurations\UserEntityConfiguration.cs" />
+    <Compile Include="EntityConfigurations\UserRoleEntityConfiguration.cs" />
+    <Compile Include="EntityConfigurations\UserTypeEntityConfiguration.cs" />
     <Compile Include="Interfaces\IConvert.cs" />
     <Compile Include="Migrations\202001260039055_AddedSourcesAndCategoriesTables.cs" />
     <Compile Include="Migrations\202001260039055_AddedSourcesAndCategoriesTables.Designer.cs">
@@ -79,20 +89,107 @@
     <Compile Include="Migrations\202002160907164_AddedTagEntityConfiguration.Designer.cs">
       <DependentUpon>202002160907164_AddedTagEntityConfiguration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002231803122_AddedEntityUserType.cs" />
+    <Compile Include="Migrations\202002231803122_AddedEntityUserType.Designer.cs">
+      <DependentUpon>202002231803122_AddedEntityUserType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002231806213_AddedEntityUserRole.cs" />
+    <Compile Include="Migrations\202002231806213_AddedEntityUserRole.Designer.cs">
+      <DependentUpon>202002231806213_AddedEntityUserRole.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002231842180_Renamed UserTypeAndUserRoleEntities.cs" />
+    <Compile Include="Migrations\202002231842180_Renamed UserTypeAndUserRoleEntities.Designer.cs">
+      <DependentUpon>202002231842180_Renamed UserTypeAndUserRoleEntities.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002232005576_AddedEntityUser.cs" />
+    <Compile Include="Migrations\202002232005576_AddedEntityUser.Designer.cs">
+      <DependentUpon>202002232005576_AddedEntityUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002232007450_AddUserTypeData.cs" />
+    <Compile Include="Migrations\202002232007450_AddUserTypeData.Designer.cs">
+      <DependentUpon>202002232007450_AddUserTypeData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002232018304_AddUserTypeData1.cs" />
+    <Compile Include="Migrations\202002232018304_AddUserTypeData1.Designer.cs">
+      <DependentUpon>202002232018304_AddUserTypeData1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002232019562_AddUserTypeData2.cs" />
+    <Compile Include="Migrations\202002232019562_AddUserTypeData2.Designer.cs">
+      <DependentUpon>202002232019562_AddUserTypeData2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002232021089_AddUserRoleData.cs" />
+    <Compile Include="Migrations\202002232021089_AddUserRoleData.Designer.cs">
+      <DependentUpon>202002232021089_AddUserRoleData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002232028292_AddAdminUser.cs" />
+    <Compile Include="Migrations\202002232028292_AddAdminUser.Designer.cs">
+      <DependentUpon>202002232028292_AddAdminUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002232049492_RenameUserRolesTableToRoles.cs" />
+    <Compile Include="Migrations\202002232049492_RenameUserRolesTableToRoles.Designer.cs">
+      <DependentUpon>202002232049492_RenameUserRolesTableToRoles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002232057208_EstablishedRelationshipBetweenUsersAndRolesEntities.cs" />
+    <Compile Include="Migrations\202002232057208_EstablishedRelationshipBetweenUsersAndRolesEntities.Designer.cs">
+      <DependentUpon>202002232057208_EstablishedRelationshipBetweenUsersAndRolesEntities.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003011640039_AddedArticleTagsEntity.cs" />
+    <Compile Include="Migrations\202003011640039_AddedArticleTagsEntity.Designer.cs">
+      <DependentUpon>202003011640039_AddedArticleTagsEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003011659048_ChangedArticleUrlBackToTypeString.cs" />
+    <Compile Include="Migrations\202003011659048_ChangedArticleUrlBackToTypeString.Designer.cs">
+      <DependentUpon>202003011659048_ChangedArticleUrlBackToTypeString.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003011958324_AddedImageEntity.cs" />
+    <Compile Include="Migrations\202003011958324_AddedImageEntity.Designer.cs">
+      <DependentUpon>202003011958324_AddedImageEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003021058118_AddedSynopsisFieldToArticleEntity.cs" />
+    <Compile Include="Migrations\202003021058118_AddedSynopsisFieldToArticleEntity.Designer.cs">
+      <DependentUpon>202003021058118_AddedSynopsisFieldToArticleEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003032010309_MadeExtensionAndSaveToNullableOfImageEntity.cs" />
+    <Compile Include="Migrations\202003032010309_MadeExtensionAndSaveToNullableOfImageEntity.Designer.cs">
+      <DependentUpon>202003032010309_MadeExtensionAndSaveToNullableOfImageEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003032022167_MadeExtensionAndSaveToNotNullableOfImageEntity.cs" />
+    <Compile Include="Migrations\202003032022167_MadeExtensionAndSaveToNotNullableOfImageEntity.Designer.cs">
+      <DependentUpon>202003032022167_MadeExtensionAndSaveToNotNullableOfImageEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003032036253_AddedSourceAndCategoryPropertyToArticleEntity.cs" />
+    <Compile Include="Migrations\202003032036253_AddedSourceAndCategoryPropertyToArticleEntity.Designer.cs">
+      <DependentUpon>202003032036253_AddedSourceAndCategoryPropertyToArticleEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003032047071_MadePubDateNullableInArticleEntity.cs" />
+    <Compile Include="Migrations\202003032047071_MadePubDateNullableInArticleEntity.Designer.cs">
+      <DependentUpon>202003032047071_MadePubDateNullableInArticleEntity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ModelExtensions\Extension.cs" />
     <Compile Include="Models\Article.cs" />
     <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\Image.cs" />
     <Compile Include="Models\Source.cs" />
     <Compile Include="Models\Tag.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserRole.cs" />
+    <Compile Include="Models\UserType.cs" />
     <Compile Include="SQLContext\PointwiseSqlContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlRepositories\SqlArticleRepository.cs" />
     <Compile Include="SqlRepositories\SqlCategoryRepository.cs" />
+    <Compile Include="SqlRepositories\SqlImageRepository.cs" />
     <Compile Include="SqlRepositories\SqlSourceRepository.cs" />
     <Compile Include="SqlRepositories\SqlTagRepository.cs" />
+    <Compile Include="SqlRepositories\SqlUserRepository.cs" />
+    <Compile Include="SqlRepositories\SqlUserRoleRepository.cs" />
+    <Compile Include="SqlRepositories\SqlUserTypeRepository.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -121,7 +218,84 @@
     <EmbeddedResource Include="Migrations\202002160907164_AddedTagEntityConfiguration.resx">
       <DependentUpon>202002160907164_AddedTagEntityConfiguration.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002231803122_AddedEntityUserType.resx">
+      <DependentUpon>202002231803122_AddedEntityUserType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002231806213_AddedEntityUserRole.resx">
+      <DependentUpon>202002231806213_AddedEntityUserRole.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002231842180_Renamed UserTypeAndUserRoleEntities.resx">
+      <DependentUpon>202002231842180_Renamed UserTypeAndUserRoleEntities.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002232005576_AddedEntityUser.resx">
+      <DependentUpon>202002232005576_AddedEntityUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002232007450_AddUserTypeData.resx">
+      <DependentUpon>202002232007450_AddUserTypeData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002232018304_AddUserTypeData1.resx">
+      <DependentUpon>202002232018304_AddUserTypeData1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002232019562_AddUserTypeData2.resx">
+      <DependentUpon>202002232019562_AddUserTypeData2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002232021089_AddUserRoleData.resx">
+      <DependentUpon>202002232021089_AddUserRoleData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002232028292_AddAdminUser.resx">
+      <DependentUpon>202002232028292_AddAdminUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002232049492_RenameUserRolesTableToRoles.resx">
+      <DependentUpon>202002232049492_RenameUserRolesTableToRoles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002232057208_EstablishedRelationshipBetweenUsersAndRolesEntities.resx">
+      <DependentUpon>202002232057208_EstablishedRelationshipBetweenUsersAndRolesEntities.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003011640039_AddedArticleTagsEntity.resx">
+      <DependentUpon>202003011640039_AddedArticleTagsEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003011659048_ChangedArticleUrlBackToTypeString.resx">
+      <DependentUpon>202003011659048_ChangedArticleUrlBackToTypeString.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003011958324_AddedImageEntity.resx">
+      <DependentUpon>202003011958324_AddedImageEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003021058118_AddedSynopsisFieldToArticleEntity.resx">
+      <DependentUpon>202003021058118_AddedSynopsisFieldToArticleEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003032010309_MadeExtensionAndSaveToNullableOfImageEntity.resx">
+      <DependentUpon>202003032010309_MadeExtensionAndSaveToNullableOfImageEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003032022167_MadeExtensionAndSaveToNotNullableOfImageEntity.resx">
+      <DependentUpon>202003032022167_MadeExtensionAndSaveToNotNullableOfImageEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003032036253_AddedSourceAndCategoryPropertyToArticleEntity.resx">
+      <DependentUpon>202003032036253_AddedSourceAndCategoryPropertyToArticleEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003032047071_MadePubDateNullableInArticleEntity.resx">
+      <DependentUpon>202003032047071_MadePubDateNullableInArticleEntity.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\analyzers\dotnet\cs\Microsoft.CodeAnalysis.VersionCheckAnalyzer.resources.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\analyzers\dotnet\Microsoft.CodeAnalysis.VersionCheckAnalyzer.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\analyzers\dotnet\cs\Humanizer.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.CodeQuality.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.CodeQuality.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.NetCore.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.NetCore.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.NetCore.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.NetCore.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.NetFramework.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.NetFramework.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.NetFramework.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.NetFramework.CSharp.Analyzers.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\build\Microsoft.CodeQuality.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\build\Microsoft.CodeQuality.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.NetCore.Analyzers.2.9.8\build\Microsoft.NetCore.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NetCore.Analyzers.2.9.8\build\Microsoft.NetCore.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.NetFramework.Analyzers.2.9.8\build\Microsoft.NetFramework.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NetFramework.Analyzers.2.9.8\build\Microsoft.NetFramework.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props'))" />
+  </Target>
 </Project>

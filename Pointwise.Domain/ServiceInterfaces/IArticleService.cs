@@ -20,9 +20,12 @@ namespace Pointwise.Domain.ServiceInterfaces
 
         IEnumerable<IArticle> AddRange(IEnumerable<Models.Article> entities);
 
-        void Remove(int id);
+        void Delete(int id);
 
-        void RemoveRange(IEnumerable<Models.Article> entities);
+        void DeleteRange(IEnumerable<Models.Article> entities);
+        void SoftDelete(int id);
+        void UndoSoftDelete(int id);
+        void SoftDeleteRange(IEnumerable<Models.Article> entities);
 
         IArticle Update(Models.Article entity);
 

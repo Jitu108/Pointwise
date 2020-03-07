@@ -1,16 +1,12 @@
 ﻿using Pointwise.Domain.Interfaces;
+using Pointwise.Domain.Models;
 using System.Collections.Generic;
 
 namespace Pointwise.Domain.Repositories
 {
-    public interface IUserRepository
+    public interface IUserRepository : IRepository<IUser, User>
     {
-        IEnumerable<IUser> GetAllUsers();
-        IUser GetUserById(int id);
-        IEnumerable<IUser> GetUserByName(string nameString);
-        IEnumerable<IUser> GetUserByEmailAddress(string emailString);
-        IEnumerable<IUser> GetUserByPhoneNumber(string phoneString);
-        IEnumerable<IUser> GetBlockedUsers();
-        bool UserIsBlocked(IUser user);
+        IUser Login(string userName, string password);
+        bool Logout(string userName);
     }
 }

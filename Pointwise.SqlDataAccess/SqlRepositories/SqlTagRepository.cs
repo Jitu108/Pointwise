@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Pointwise.SqlDataAccess.SqlRepositories
 {
-    class SqlTagRepository : ITagRepository
+    public sealed class SqlTagRepository : ITagRepository, IDisposable
     {
         private readonly PointwiseSqlContext context;
 
@@ -18,7 +18,7 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             context = new PointwiseSqlContext(connectionString);
         }
 
-        public IEnumerable<ITag> GetTags()
+        public IEnumerable<ITag> GetAll()
         {
             var tags = context.Tags.AsEnumerable().Select(x => x.ToDomainEntity()).ToList();
             return tags;
@@ -47,20 +47,23 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             return insertedRows.Select(x => x.ToDomainEntity()).AsEnumerable();
         }
 
-        public void Remove(int id)
+        public void SoftDelete(int id)
         {
             var sEntity = context.Tags.SingleOrDefault(x => x.Id == id);
             sEntity.IsDeleted = true;
-            //context.Categories.Remove(sEntity);
             context.SaveChanges();
-            var sEntity1 = context.Tags.SingleOrDefault(x => x.Id == id);
-
         }
 
-        public void RemoveRange(IEnumerable<Domain.Models.Tag> entities)
+        public void UndoSoftDelete(int id)
+        {
+            var sEntity = context.Tags.SingleOrDefault(x => x.Id == id);
+            sEntity.IsDeleted = false;
+            context.SaveChanges();
+        }
+
+        public void SoftDeleteRange(IEnumerable<Domain.Models.Tag> entities)
         {
             var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
-            //context.Categories.RemoveRange(sEntities);
             foreach (var entity in sEntities)
             {
                 entity.IsDeleted = true;
@@ -68,14 +71,14 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             context.SaveChanges();
         }
 
-        public void HardRemove(int id)
+        public void Delete(int id)
         {
             var sEntity = context.Tags.SingleOrDefault(x => x.Id == id);
             context.Tags.Remove(sEntity);
             context.SaveChanges();
         }
 
-        public void HardRemoveRange(IEnumerable<Domain.Models.Tag> entities)
+        public void DeleteRange(IEnumerable<Domain.Models.Tag> entities)
         {
             var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
             context.Tags.RemoveRange(sEntities);
@@ -85,12 +88,29 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
 
         public ITag Update(Domain.Models.Tag entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var sEntity = context.Tags.Find(entity.Id);
             sEntity.Name = entity.Name;
             sEntity.LastModifiedOn = DateTime.Now;
 
             context.SaveChanges();
             return sEntity.ToDomainEntity();
+        }
+
+        public void Dispose()
+        {
+            context.Dispose();
+        }
+
+        public ITag GetByName(string name)
+        {
+            return context.Tags.Where(x => x.Name == name).FirstOrDefault().ToDomainEntity();
+        }
+
+        public IEnumerable<ITag> GetByName(IEnumerable<string> names)
+        {
+            return context.Tags.AsEnumerable().Where(x => names.Contains(x.Name)).Select(x => x.ToDomainEntity()).AsEnumerable();
         }
     }
 }

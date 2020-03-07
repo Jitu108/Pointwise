@@ -9,7 +9,7 @@ using Pointwise.SqlDataAccess.Models;
 
 namespace Pointwise.SqlDataAccess.SqlRepositories
 {
-    public class SqlCategoryRepository : ICategoryRepository
+    public sealed class SqlCategoryRepository : ICategoryRepository, IDisposable
     {
         private readonly PointwiseSqlContext context;
 
@@ -18,7 +18,7 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             context = new PointwiseSqlContext(connectionString);
         }
 
-        public IEnumerable<ICategory> GetCategories()
+        public IEnumerable<ICategory> GetAll()
         {
             var categories = context.Categories.AsEnumerable().Select(x => x.ToDomainEntity()).ToList();
             return categories;
@@ -47,20 +47,24 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             return insertedRows.Select(x => x.ToDomainEntity()).AsEnumerable();
         }
 
-        public void Remove(int id)
+        public void SoftDelete(int id)
         {
             var sEntity = context.Categories.SingleOrDefault(x => x.Id == id);
             sEntity.IsDeleted = true;
-            //context.Categories.Remove(sEntity);
             context.SaveChanges();
-            var sEntity1 = context.Categories.SingleOrDefault(x => x.Id == id);
 
         }
 
-        public void RemoveRange(IEnumerable<Domain.Models.Category> entities)
+        public void UndoSoftDelete(int id)
+        {
+            var sEntity = context.Categories.SingleOrDefault(x => x.Id == id);
+            sEntity.IsDeleted = false;
+            context.SaveChanges();
+        }
+
+        public void SoftDeleteRange(IEnumerable<Domain.Models.Category> entities)
         {
             var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
-            //context.Categories.RemoveRange(sEntities);
             foreach(var entity in sEntities)
             {
                 entity.IsDeleted = true;
@@ -68,14 +72,14 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             context.SaveChanges();
         }
 
-        public void HardRemove(int id)
+        public void Delete(int id)
         {
             var sEntity = context.Categories.SingleOrDefault(x => x.Id == id);
             context.Categories.Remove(sEntity);
             context.SaveChanges();
         }
 
-        public void HardRemoveRange(IEnumerable<Domain.Models.Category> entities)
+        public void DeleteRange(IEnumerable<Domain.Models.Category> entities)
         {
             var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
             context.Categories.RemoveRange(sEntities);
@@ -85,6 +89,8 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
 
         public ICategory Update(Domain.Models.Category entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             var sEntity = context.Categories.Find(entity.Id);
             sEntity.Name = entity.Name;
             sEntity.LastModifiedOn = DateTime.Now;
@@ -92,5 +98,12 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             context.SaveChanges();
             return sEntity.ToDomainEntity();
         }
+
+        public void Dispose()
+        {
+            context.Dispose();
+        }
+
+        
     }
 }
