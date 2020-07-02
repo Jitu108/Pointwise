@@ -4,6 +4,7 @@ using Pointwise.Domain.Models;
 using Pointwise.SqlDataAccess.Interfaces;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Pointwise.SqlDataAccess.Models
 {
@@ -16,21 +17,23 @@ namespace Pointwise.SqlDataAccess.Models
         public string EmailAddress { get; set; }
         public string PhoneNumber { get; set; }
 
-        private SqlUserType userType;
+        public SqlUserType SqlUserType { get; set; }
         public IUserType UserType
         {
-            get { return userType; }
-            set { userType = (SqlUserType)value; }
+            get { return SqlUserType as IUserType; }
+            set { SqlUserType = value as SqlUserType; }
         }
 
-        public SqlUserType PersistentUserType
+        public int? UserTypeId { get; set; }
+
+        public IList<SqlUserRole> SqlUserRoles { get; set; }
+
+        public virtual IList<IUserRole> UserRoles
         {
-            get => userType;
-            set => userType = value;
+            get { return SqlUserRoles != null? SqlUserRoles.Cast<IUserRole>().ToList() : new List<IUserRole>(); }
+            set { SqlUserRoles = value.Select(x => x as SqlUserRole).ToList(); }
         }
 
-        public IList<SqlUserRole> UserRoles { get; set; }
-        public int UserTypeId { get; set; }
         public UserNameType UserNameType { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }

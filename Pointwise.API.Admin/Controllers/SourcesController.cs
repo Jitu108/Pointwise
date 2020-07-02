@@ -19,9 +19,19 @@ namespace Pointwise.API.Admin.Controllers
         }
 
         // GET: api/Sources
-        public IEnumerable<ISource> Get()
+        public IHttpActionResult Get()
         {
-            return sourceService.GetSources().ToList();
+            try
+            {
+                var entities = sourceService.GetSources().ToList();
+
+                if (entities.Any()) return Ok(entities);
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -29,75 +39,168 @@ namespace Pointwise.API.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [Route("All")]
-        public IEnumerable<ISource> GetAll()
+        public IHttpActionResult GetAll()
         {
-            return sourceService.GetSourcesAll().ToList();
+            try
+            {
+                var entities = sourceService.GetSourcesAll().ToList();
+
+                if (entities.Any()) return Ok(entities);
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        public IEnumerable<ISource> GetBySearchString(string searchString)
+        public IHttpActionResult GetBySearchString(string searchString)
         {
-            return sourceService.GetBySearchString(searchString).ToList();
+            try
+            {
+                var entities = sourceService.GetBySearchString(searchString).ToList();
+
+                if (entities.Any()) return Ok(entities);
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET: api/Sources/5
-        public ISource Get(int id)
+        public IHttpActionResult Get(int id)
         {
-            return sourceService.GetById(id);
+            try
+            {
+                var entity = sourceService.GetById(id);
+
+                if (entity != null) return Ok(entity);
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST: api/Sources
-        public ISource Post([FromBody]Source source)
+        [HttpPost]
+        public IHttpActionResult Create([FromBody]Source source)
         {
-            if (!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest();
 
-            var addedSource = sourceService.Add(source);
-
-            return addedSource;
+                var addedEntity = sourceService.Add(source);
+                return CreatedAtRoute("DefaultApi", new { id = addedEntity.Id }, addedEntity);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT: api/Sources/5
-        public ISource Put(int id, [FromBody]Source source)
+        [HttpPut]
+        public IHttpActionResult Update(int id, [FromBody]Source source)
         {
-            if (!ModelState.IsValid) throw new HttpResponseException(HttpStatusCode.BadRequest);
-            if (source == null) throw new ArgumentNullException(nameof(source));
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest();
+                if (source == null) return BadRequest(nameof(source));
 
-            source.Id = id;
-            return sourceService.Update(source);
+                source.Id = id;
+                var updatedEntity = sourceService.Update(source);
+
+                if (updatedEntity != null) return Ok(updatedEntity);
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/Sources/5
         [HttpDelete]
-        public void Delete(int id)
+        public IHttpActionResult Delete(int id)
         {
-            sourceService.Delete(id);
+            try
+            {
+                var status = sourceService.Delete(id);
+                if (status) return Ok();
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
-        public void Delete([FromBody]IEnumerable<Source> sources)
+        public IHttpActionResult Delete([FromBody]IEnumerable<Source> sources)
         {
-            sourceService.DeleteRange(sources);
+            try
+            {
+                var status = sourceService.DeleteRange(sources);
+                if (status) return Ok();
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
         [Route("SoftDelete")]
-        public void SoftDelete(int id)
+        public IHttpActionResult SoftDelete(int id)
         {
-            sourceService.SoftDelete(id);
+            try
+            {
+                var status = sourceService.SoftDelete(id);
+                if (status) return Ok();
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
         [Route("UndoSoftDelete")]
-        public void UndoSoftDelete(int id)
+        public IHttpActionResult UndoSoftDelete(int id)
         {
-            sourceService.UndoSoftDelete(id);
+            try
+            {
+                var status = sourceService.UndoSoftDelete(id);
+                if (status) return Ok();
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
         [Route("SoftDeleteRange")]
-        public void SoftDelete([FromBody]IEnumerable<Source> sources)
+        public IHttpActionResult SoftDelete([FromBody]IEnumerable<Source> sources)
         {
-            sourceService.SoftDeleteRange(sources);
+            try
+            {
+                var status = sourceService.SoftDeleteRange(sources);
+                if (status) return Ok();
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -13,5 +13,9 @@ namespace Pointwise.Domain.ServiceInterfaces
         IEnumerable<IUser> GetUserByPhoneNumber(string phoneString);
         IEnumerable<IUser> GetBlockedUsers();
         bool UserIsBlocked(IUser user);
+        IUser Add(Models.User user);
+        IUser Update(Models.User user);
+        IUser Login(string userName, string password);
+        bool Logout(string userName);
     }
 }

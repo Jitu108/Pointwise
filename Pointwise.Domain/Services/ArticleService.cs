@@ -87,29 +87,29 @@ namespace Pointwise.Domain.Services
             return articleRepository.AddRange(entities);
         }
 
-        public void SoftDelete(int id)
+        public bool SoftDelete(int id)
         {
-            articleRepository.SoftDelete(id);
+            return articleRepository.SoftDelete(id);
         }
 
-        public void UndoSoftDelete(int id)
+        public bool UndoSoftDelete(int id)
         {
-            articleRepository.UndoSoftDelete(id);
+            return articleRepository.UndoSoftDelete(id);
         }
 
-        public void SoftDeleteRange(IEnumerable<Article> entities)
+        public bool SoftDeleteRange(IEnumerable<Article> entities)
         {
-            articleRepository.SoftDeleteRange(entities);
+            return articleRepository.SoftDeleteRange(entities);
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
-            articleRepository.Delete(id);
+            return articleRepository.Delete(id);
         }
 
-        public void DeleteRange(IEnumerable<Article> entities)
+        public bool DeleteRange(IEnumerable<Article> entities)
         {
-            articleRepository.DeleteRange(entities);
+            return articleRepository.DeleteRange(entities);
         }
 
         public IArticle Update(Article entity)

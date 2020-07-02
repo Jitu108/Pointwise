@@ -20,6 +20,7 @@ namespace Pointwise.API.Admin.DependencyResolution {
     using Pointwise.Domain.Repositories;
     using Pointwise.Domain.ServiceInterfaces;
     using Pointwise.Domain.Services;
+    using Pointwise.SqlDataAccess.SqlRepositories;
     using StructureMap.Configuration.DSL;
     using StructureMap.Graph;
     using System;
@@ -51,16 +52,25 @@ namespace Pointwise.API.Admin.DependencyResolution {
             For<ISourceService>().Use<SourceService>();
             For<ITagService>().Use<TagService>();
             For<IImageService>().Use<ImageService>();
+            For<IUserService>().Use<UserService>();
 
-            For<IArticleRepository>().Use((IArticleRepository)GetRepository("ArticleRepositoryType"));
-            For<ICategoryRepository>().Use((ICategoryRepository)GetRepository("CategoryRepositoryType"));
-            For<ISourceRepository>().Use((ISourceRepository)GetRepository("SourceRepositoryType"));
-            For<ITagRepository>().Use((ITagRepository)GetRepository("TagRepositoryType"));
-            For<IImageRepository>().Use((IImageRepository)GetRepository("ImageRepositoryType"));
-            For<IUserRepository>().Use((IUserRepository)GetRepository("UserRepositoryType"));
-            For<IUserRoleRepository>().Use((IUserRoleRepository)GetRepository("UserRoleRepositoryType"));
-            For<IUserTypeRepository>().Use((IUserTypeRepository)GetRepository("UserTypeRepositoryType"));
-           
+            //For<IArticleRepository>().Use((IArticleRepository)GetRepository("ArticleRepositoryType"));
+            //For<ICategoryRepository>().Use((ICategoryRepository)GetRepository("CategoryRepositoryType"));
+            //For<ISourceRepository>().Use((ISourceRepository)GetRepository("SourceRepositoryType"));
+            //For<ITagRepository>().Use((ITagRepository)GetRepository("TagRepositoryType"));
+            //For<IImageRepository>().Use((IImageRepository)GetRepository("ImageRepositoryType"));
+            //For<IUserRepository>().Use((IUserRepository)GetRepository("UserRepositoryType"));
+            //For<IUserRoleRepository>().Use((IUserRoleRepository)GetRepository("UserRoleRepositoryType"));
+            //For<IUserTypeRepository>().Use((IUserTypeRepository)GetRepository("UserTypeRepositoryType"));
+
+            For<IArticleRepository>().Use<SqlArticleRepository>().Ctor<string>().Is(connectionString);
+            For<ICategoryRepository>().Use<SqlCategoryRepository>().Ctor<string>().Is(connectionString);
+            For<ISourceRepository>().Use<SqlSourceRepository>().Ctor<string>().Is(connectionString);
+            For<ITagRepository>().Use<SqlTagRepository>().Ctor<string>().Is(connectionString);
+            For<IImageRepository>().Use<SqlImageRepository>().Ctor<string>().Is(connectionString);
+            For<IUserRepository>().Use<SqlUserRepository>().Ctor<string>().Is(connectionString);
+            For<IUserRoleRepository>().Use<SqlUserRoleRepository>().Ctor<string>().Is(connectionString);
+            For<IUserTypeRepository>().Use<SqlUserTypeRepository>().Ctor<string>().Is(connectionString);
 
             For<HelpController>().Use(ctx => new HelpController());
         }

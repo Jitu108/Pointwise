@@ -14,13 +14,13 @@ namespace Pointwise.Domain.ServiceInterfaces
 
         IEnumerable<ICategory> AddRange(IEnumerable<Models.Category> entities);
 
-        void Delete(int id);
+        bool Delete(int id);
 
-        void DeleteRange(IEnumerable<Models.Category> entities);
+        bool DeleteRange(IEnumerable<Models.Category> entities);
 
-        void SoftDelete(int id);
-        void UndoSoftDelete(int id);
-        void SoftDeleteRange(IEnumerable<Models.Category> entities);
+        bool SoftDelete(int id);
+        bool UndoSoftDelete(int id);
+        bool SoftDeleteRange(IEnumerable<Models.Category> entities);
 
         ICategory Update(Models.Category entity);
     }

@@ -18,83 +18,185 @@ namespace Pointwise.API.Admin.Controllers
             this.tagService = tagService ?? throw new ArgumentNullException(nameof(tagService));
         }
         // GET: api/Tags
-        public IEnumerable<ITag> Get()
+        public IHttpActionResult Get()
         {
-            return tagService.GetTags().ToList();
+            try
+            {
+                var entities = tagService.GetTags().ToList();
+
+                if (entities.Any()) return Ok(entities);
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [Route("All")]
-        public IEnumerable<ITag> GetAll()
+        public IHttpActionResult GetAll()
         {
-            return tagService.GetTagsAll().ToList();
+            try
+            {
+                var entities = tagService.GetTagsAll().ToList();
+
+                if (entities.Any()) return Ok(entities);
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        public IEnumerable<ITag> GetBySearchString(string searchString)
+        public IHttpActionResult GetBySearchString(string searchString)
         {
-            return tagService.GetBySearchString(searchString).ToList();
+            try
+            {
+                var entities = tagService.GetBySearchString(searchString).ToList();
+
+                if (entities.Any()) return Ok(entities);
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET: api/Tags/5
-        public ITag Get(int id)
+        public IHttpActionResult Get(int id)
         {
-            return tagService.GetById(id);
+            try
+            {
+                var entity = tagService.GetById(id);
+
+                if (entity != null) return Ok(entity);
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST: api/Tags
         [HttpPost]
-        public ITag Create([FromBody]Tag tag)
+        public IHttpActionResult Create([FromBody]Tag tag)
         {
-            if (!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest();
 
-            var addedTag = tagService.Add(tag);
-
-            return addedTag;
+                var addedEntity = tagService.Add(tag);
+                return CreatedAtRoute("DefaultApi", new { id = addedEntity.Id }, addedEntity);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
         }
 
         // PUT: api/Tags/5
-        public ITag Put(int id, [FromBody]Tag tag)
+        [HttpPut]
+        public IHttpActionResult Update(int id, [FromBody]Tag tag)
         {
-            if (!ModelState.IsValid) throw new HttpResponseException(HttpStatusCode.BadRequest);
-            if (tag == null) throw new ArgumentNullException(nameof(tag));
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest();
+                if (tag == null) return BadRequest(nameof(tag));
 
-            tag.Id = id;
-            return tagService.Update(tag);
+                tag.Id = id;
+                var updatedEntity = tagService.Update(tag);
+
+                if (updatedEntity != null) return Ok(updatedEntity);
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/Tags/5
         [HttpDelete]
-        public void Delete(int id)
+        public IHttpActionResult Delete(int id)
         {
-            tagService.Delete(id);
+            try
+            {
+                var status = tagService.Delete(id);
+                if (status) return Ok();
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
-        public void Delete([FromBody]IEnumerable<Tag> tags)
+        public IHttpActionResult Delete([FromBody]IEnumerable<Tag> tags)
         {
-            tagService.DeleteRange(tags);
+            try
+            {
+                var status = tagService.DeleteRange(tags);
+                if (status) return Ok();
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
         [Route("SoftDelete")]
-        public void SoftDelete(int id)
+        public IHttpActionResult SoftDelete(int id)
         {
-            tagService.SoftDelete(id);
+            try
+            {
+                var status = tagService.SoftDelete(id);
+                if (status) return Ok();
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
         [Route("UndoSoftDelete")]
-        public void UndoSoftDelete(int id)
+        public IHttpActionResult UndoSoftDelete(int id)
         {
-            tagService.UndoSoftDelete(id);
+            try
+            {
+                var status = tagService.UndoSoftDelete(id);
+                if (status) return Ok();
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
         [Route("SoftDeleteRange")]
-        public void SoftDelete([FromBody]IEnumerable<Tag> tags)
+        public IHttpActionResult SoftDelete([FromBody]IEnumerable<Tag> tags)
         {
-            tagService.SoftDeleteRange(tags);
+            try
+            {
+                var status = tagService.SoftDeleteRange(tags);
+                if (status) return Ok();
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -22,11 +22,9 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
 
         public IEnumerable<IArticle> GetAll()
         {
-            var images = context.Images.ToList();
-
-            var articles = context.Articles
-                .Include(x => x.SqlSource)
-                .Include(x => x.SqlCategory)
+            var articles = context.Articles.AsNoTracking()
+                .Include(x => x.SqlSource).AsNoTracking()
+                .Include(x => x.SqlCategory).AsNoTracking()
                 .Include(x => x.SqlTags).AsNoTracking()
                 .Include(x => x.SqlImages).AsNoTracking()
                 .AsEnumerable().Select(x => x.ToDomainEntity()).ToList();
@@ -34,13 +32,20 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
         }
         public IArticle GetById(int id)
         {
-            var article = context.Articles
-                .Include(x => x.SqlSource)
-                .Include(x => x.SqlCategory)
-                .Include(x => x.SqlTags).AsNoTracking()
-                .Include(x=> x.SqlImages).AsNoTracking()
-                .Where(x => x.Id == id).FirstOrDefault();
-            return article.ToDomainEntity();
+            try
+            {
+                var article = context.Articles.AsNoTracking()
+                    .Include(x => x.SqlSource).AsNoTracking()
+                    .Include(x => x.SqlCategory).AsNoTracking()
+                    .Include(x => x.SqlTags).AsNoTracking()
+                    .Include(x => x.SqlImages).AsNoTracking()
+                    .Where(x => x.Id == id).FirstOrDefault();
+                return article.ToDomainEntity();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public IArticle Add(Domain.Models.Article entity)
@@ -74,49 +79,57 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
 
         public IEnumerable<IArticle> AddRange(IEnumerable<Domain.Models.Article> entities)
         {
-            var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
+            var sEntities = entities.Select(x => x.ToPersistentEntity()).ToList();
             var insertedRows = context.Articles.AddRange(sEntities);
             context.SaveChanges();
 
-            return insertedRows.Select(x => x.ToDomainEntity()).AsEnumerable();
+            return insertedRows.Select(x => x.ToDomainEntity()).ToList();
         }
 
-        public void SoftDelete(int id)
+        public bool SoftDelete(int id)
         {
-            var sEntity = context.Articles.SingleOrDefault(x => x.Id == id);
+            var sEntity = context.Articles.FirstOrDefault(x => x.Id == id);
+            if (sEntity == null) return false;
             sEntity.IsDeleted = true;
             context.SaveChanges();
+            return true;
         }
 
-        public void UndoSoftDelete(int id)
+        public bool UndoSoftDelete(int id)
         {
-            var sEntity = context.Articles.SingleOrDefault(x => x.Id == id);
+            var sEntity = context.Articles.FirstOrDefault(x => x.Id == id);
+            if (sEntity == null) return false;
             sEntity.IsDeleted = false;
             context.SaveChanges();
+            return true;
         }
 
-        public void SoftDeleteRange(IEnumerable<Domain.Models.Article> entities)
+        public bool SoftDeleteRange(IEnumerable<Domain.Models.Article> entities)
         {
-            var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
+            var sEntities = entities.Select(x => x.ToPersistentEntity()).ToList();
             foreach(var article in sEntities)
             {
                 article.IsDeleted = true;
             }
             context.SaveChanges();
+            return true;
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
             var sEntity = context.Articles.SingleOrDefault(x => x.Id == id);
+            if (sEntity == null) return false;
             context.Articles.Remove(sEntity);
             context.SaveChanges();
+            return true;
         }
 
-        public void DeleteRange(IEnumerable<Domain.Models.Article> entities)
+        public bool DeleteRange(IEnumerable<Domain.Models.Article> entities)
         {
-            var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
+            var sEntities = entities.Select(x => x.ToPersistentEntity()).ToList();
             context.Articles.RemoveRange(sEntities);
             context.SaveChanges();
+            return true;
         }
 
         public IArticle Update(Domain.Models.Article entity)
@@ -128,9 +141,14 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
                 .Where(x => x.Id == entity.Id)
                 .FirstOrDefault();
 
+            if (sEntity == null) return null;
+
             var tagsToInsert = entity.Tags
                 .Select(x => x.Id)
                 .ToList();
+
+            if (entity.Source != null) sEntity.SourceId = entity.Source.Id;
+            if (entity.Category != null) sEntity.CategoryId = entity.Category.Id;
 
             sEntity.Author = entity.Author;
             sEntity.Title = entity.Title;
@@ -139,8 +157,6 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             sEntity.PublicationDate = entity.PublicationDate;
             sEntity.Content = entity.Content;
             sEntity.Synopsis = entity.Synopsis;
-            sEntity.SourceId = entity.Source.Id;
-            sEntity.CategoryId = entity.Category.Id;
             sEntity.SqlTags = context.Tags
                 .Where(x => tagsToInsert.Contains(x.Id))
                 .ToList();

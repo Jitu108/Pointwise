@@ -20,10 +20,12 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
         public IUser Add(Domain.Models.User entity)
         {
             var sEntity = entity.ToPersistentEntity();
+            if (entity.UserType == null) sEntity.UserTypeId = 3;
             var insertedRow = context.Users.Add(sEntity);
             context.SaveChanges();
 
             return insertedRow.ToDomainEntity();
+            //return entity;
         }
 
         public IEnumerable<IUser> AddRange(IEnumerable<Domain.Models.User> entities)
@@ -35,21 +37,27 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             return insertedRows.Select(x => x.ToDomainEntity()).AsEnumerable();
         }
 
-        public void SoftDelete(int id)
+        public bool SoftDelete(int id)
         {
             var sEntity = context.UserRoles.SingleOrDefault(x => x.Id == id);
+            if (sEntity == null) return false;
+
             sEntity.IsDeleted = true;
             context.SaveChanges();
+            return true;
         }
 
-        public void UndoSoftDelete(int id)
+        public bool UndoSoftDelete(int id)
         {
             var sEntity = context.UserRoles.SingleOrDefault(x => x.Id == id);
+            if (sEntity == null) return false;
+
             sEntity.IsDeleted = false;
             context.SaveChanges();
+            return true;
         }
 
-        public void SoftDeleteRange(IEnumerable<Domain.Models.User> entities)
+        public bool SoftDeleteRange(IEnumerable<Domain.Models.User> entities)
         {
             var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
             foreach (var entity in sEntities)
@@ -57,21 +65,26 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
                 entity.IsDeleted = true;
             }
             context.SaveChanges();
+            return true;
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
             var sEntity = context.Users.SingleOrDefault(x => x.Id == id);
+            if (sEntity == null) return false;
+
             context.Users.Remove(sEntity);
             context.SaveChanges();
+            return true;
         }
 
-        public void DeleteRange(IEnumerable<Domain.Models.User> entities)
+        public bool DeleteRange(IEnumerable<Domain.Models.User> entities)
         {
             var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
             context.Users.RemoveRange(sEntities);
 
             context.SaveChanges();
+            return true;
         }
 
         public IUser Update(Domain.Models.User entity)
@@ -109,7 +122,7 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
         public IUser Login(string userName, string password)
         {
             var user = context.Users.SingleOrDefault(x => x.UserName == userName && x.Password == password);
-            return user;
+            return user!= null? user.ToDomainEntity() : null;
         }
 
         public bool Logout(string userName)

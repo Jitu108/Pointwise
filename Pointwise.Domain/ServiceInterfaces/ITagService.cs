@@ -15,12 +15,12 @@ namespace Pointwise.Domain.ServiceInterfaces
 
         IEnumerable<ITag> AddRange(IEnumerable<Models.Tag> entities);
 
-        void Delete(int id);
+        bool Delete(int id);
 
-        void DeleteRange(IEnumerable<Models.Tag> entities);
-        void SoftDelete(int id);
-        void UndoSoftDelete(int id);
-        void SoftDeleteRange(IEnumerable<Models.Tag> entities);
+        bool DeleteRange(IEnumerable<Models.Tag> entities);
+        bool SoftDelete(int id);
+        bool UndoSoftDelete(int id);
+        bool SoftDeleteRange(IEnumerable<Models.Tag> entities);
 
         ITag Update(Models.Tag entity);
     }

@@ -1,4 +1,5 @@
-﻿using Pointwise.API.Admin.App_Start;
+﻿using Newtonsoft.Json.Serialization;
+using Pointwise.API.Admin.App_Start;
 using Pointwise.API.Admin.DependencyResolution;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,9 @@ namespace Pointwise.API.Admin
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            config.Formatters.JsonFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
+            config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
         }
     }
 }

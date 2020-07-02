@@ -18,31 +18,31 @@ namespace Pointwise.SqlDataAccess.Models
         public string Content { get; set; }
         public string Synopsis { get; set; }
 
-        public Source SqlSource { get; set; }
-        public ISource Source { 
+        public virtual Source SqlSource { get; set; }
+        public virtual ISource Source { 
             get { return SqlSource as ISource; } 
             set { SqlSource = value as Source; } 
         }
         public int? SourceId { get; set; }
 
-        public Category SqlCategory { get; set; }
-        public ICategory Category {
+        public virtual Category SqlCategory { get; set; }
+        public virtual ICategory Category {
             get { return SqlCategory as ICategory; }
             set { SqlCategory = value as Category; }
         }
         public int? CategoryId { get; set; }
-        public ArticleAssociatedAssetType AssetType { get; set; }
-        public IList<Tag> SqlTags { get; set; }
+        public virtual ArticleAssociatedAssetType AssetType { get; set; }
+        public virtual IList<Tag> SqlTags { get; set; }
 
-        public IList<ITag> Tags
+        public virtual IList<ITag> Tags
         {
             get { return SqlTags.Cast<ITag>().ToList(); }
             set { SqlTags = value.Select(x => x as Tag).ToList(); }
         }
 
-        public IList<Image> SqlImages { get; set; }
+        public virtual IList<Image> SqlImages { get; set; }
 
-        public IList<IImage> Images
+        public virtual IList<IImage> Images
         {
             get { return SqlImages.Cast<IImage>().ToList(); }
             set { SqlImages = value.Select(x => x as Image).ToList(); }

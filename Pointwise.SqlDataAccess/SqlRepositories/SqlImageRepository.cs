@@ -33,14 +33,20 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
 
         public IImage Add(Image entity)
         {
+            
+
+            return AddImage(entity).ToDomainEntity();
+        }
+
+        private Models.Image AddImage(Image entity)
+        {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
 
             var sEntity = entity.ToPersistentEntity();
             var insertedRow = context.Images.Add(sEntity);
 
             context.SaveChanges();
-
-            return insertedRow.ToDomainEntity();
+            return insertedRow;
         }
 
         public IEnumerable<IImage> AddRange(IEnumerable<Image> entities)
@@ -72,35 +78,45 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
 
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
             var sEntity = context.Images.SingleOrDefault(x => x.Id == id);
+            if (sEntity == null) return false;
+
             context.Images.Remove(sEntity);
             context.SaveChanges();
+            return true;
         }
 
-        public void DeleteRange(IEnumerable<Image> entities)
+        public bool DeleteRange(IEnumerable<Image> entities)
         {
             var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
             context.Images.RemoveRange(sEntities);
             context.SaveChanges();
+            return true;
         }
 
-        public void SoftDelete(int id)
+        public bool SoftDelete(int id)
         {
             var sEntity = context.Images.SingleOrDefault(x => x.Id == id);
+            if (sEntity == null) return false;
+
             sEntity.IsDeleted = true;
             context.SaveChanges();
+            return true;
         }
 
-        public void UndoSoftDelete(int id)
+        public bool UndoSoftDelete(int id)
         {
             var sEntity = context.Images.SingleOrDefault(x => x.Id == id);
+            if (sEntity == null) return false;
+
             sEntity.IsDeleted = false;
             context.SaveChanges();
+            return true;
         }
 
-        public void SoftDeleteRange(IEnumerable<Image> entities)
+        public bool SoftDeleteRange(IEnumerable<Image> entities)
         {
             var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
             foreach (var image in sEntities)
@@ -108,6 +124,7 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
                 image.IsDeleted = true;
             }
             context.SaveChanges();
+            return true;
         }
 
         public IImage Update(Image entity)
@@ -137,18 +154,26 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             var sEntites = new List<Models.Image>();
             foreach (var entity in entities)
             {
-                var sEntity = context.Images.Find(entity.Id);
-                sEntity.Name = entity.Name;
-                sEntity.Path = entity.Path;
-                sEntity.ContentType = entity.ContentType;
-                sEntity.Data = entity.Data;
-                sEntity.Extension = entity.Extension;
-                sEntity.SavedTo = entity.SavedTo;
-                sEntity.ArticleId = entity.ArticleId;
+                if (entity.Id == 0)
+                {
+                    var sEntity = AddImage((Image)entity);
+                    sEntites.Add(sEntity);
+                }
+                else
+                {
+                    var sEntity = context.Images.Find(entity.Id);
+                    sEntity.Name = entity.Name;
+                    sEntity.Path = entity.Path;
+                    sEntity.ContentType = entity.ContentType;
+                    sEntity.Data = entity.Data;
+                    sEntity.Extension = entity.Extension;
+                    sEntity.SavedTo = entity.SavedTo;
+                    sEntity.ArticleId = entity.ArticleId;
 
-                sEntity.LastModifiedOn = now;
-                context.SaveChanges();
-                sEntites.Add(sEntity);
+                    sEntity.LastModifiedOn = now;
+                    context.SaveChanges();
+                    sEntites.Add(sEntity);
+                }
             }
             return sEntites.Select(x => x.ToDomainEntity()).ToList();
         }

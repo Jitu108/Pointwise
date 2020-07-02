@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Pointwise.Domain.Interfaces;
 using Pointwise.Domain.Enums;
+using System;
 
 namespace Pointwise.Domain.ServiceInterfaces
 {
@@ -20,14 +21,13 @@ namespace Pointwise.Domain.ServiceInterfaces
 
         IEnumerable<IArticle> AddRange(IEnumerable<Models.Article> entities);
 
-        void Delete(int id);
+        bool Delete(int id);
 
-        void DeleteRange(IEnumerable<Models.Article> entities);
-        void SoftDelete(int id);
-        void UndoSoftDelete(int id);
-        void SoftDeleteRange(IEnumerable<Models.Article> entities);
+        bool DeleteRange(IEnumerable<Models.Article> entities);
+        bool SoftDelete(int id);
+        bool UndoSoftDelete(int id);
+        bool SoftDeleteRange(IEnumerable<Models.Article> entities);
 
         IArticle Update(Models.Article entity);
-
     }
 }

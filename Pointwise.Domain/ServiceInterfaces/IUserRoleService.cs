@@ -12,14 +12,14 @@ namespace Pointwise.Domain.ServiceInterfaces
 
         IEnumerable<IUserRole> AddRange(IEnumerable<Models.UserRole> entities);
 
-        void Delete(int id);
+        bool Delete(int id);
 
-        void DeleteRange(IEnumerable<Models.UserRole> entities);
+        bool DeleteRange(IEnumerable<Models.UserRole> entities);
 
-        void SoftDelete(int id);
-        void UndoSoftDelete(int id);
+        bool SoftDelete(int id);
+        bool UndoSoftDelete(int id);
 
-        void SoftDeleteRange(IEnumerable<Models.UserRole> entities);
+        bool SoftDeleteRange(IEnumerable<Models.UserRole> entities);
 
         IUserRole Update(Models.UserRole entity);
     }

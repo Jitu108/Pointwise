@@ -18,9 +18,19 @@ namespace Pointwise.API.Admin.Controllers
             this.categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
         }
         // GET: api/Categories
-        public IEnumerable<ICategory> Get()
+        public IHttpActionResult Get()
         {
-            return categoryService.GetCategories().ToList();
+            try
+            {
+                var entities = categoryService.GetCategories().ToList();
+
+                if (entities.Any()) return Ok(entities);
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -28,78 +38,170 @@ namespace Pointwise.API.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [Route("All")]
-        public IEnumerable<ICategory> GetAll()
+        public IHttpActionResult GetAll()
         {
-            return categoryService.GetCategoriesAll().ToList();
+            try
+            {
+                var entities = categoryService.GetCategoriesAll().ToList();
+
+                if (entities.Any()) return Ok(entities);
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        public IEnumerable<ICategory> GetBySearchString(string searchString)
+        public IHttpActionResult GetBySearchString(string searchString)
         {
-            return categoryService.GetBySearchString(searchString).ToList();
+            try
+            {
+                var entities = categoryService.GetBySearchString(searchString).ToList();
+
+                if (entities.Any()) return Ok(entities);
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET: api/Categories/5
-        public ICategory Get(int id)
+        public IHttpActionResult Get(int id)
         {
-            return categoryService.GetById(id);
+            try
+            {
+                var entity = categoryService.GetById(id);
+
+                if (entity != null) return Ok(entity);
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST: api/Categories
         [HttpPost]
-        public ICategory Create([FromBody]Category category)
+        public IHttpActionResult Create([FromBody]Category category)
         {
-            if (!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest();
 
-            var addedCategory = categoryService.Add(category);
-
-            return addedCategory;
+                var addedEntity = categoryService.Add(category);
+                return CreatedAtRoute("DefaultApi", new { id = addedEntity.Id }, addedEntity);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
         }
 
         // PUT: api/Categories/5
-        public ICategory Put(int id, [FromBody]Category category)
+        [HttpPut]
+        public IHttpActionResult Update(int id, [FromBody]Category category)
         {
-            if (!ModelState.IsValid) throw new HttpResponseException(HttpStatusCode.BadRequest);
-            if (category == null) throw new ArgumentNullException(nameof(category));
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest();
+                if (category == null) return BadRequest(nameof(category));
 
-            category.Id = id;
-            
-            return categoryService.Update(category);
+                category.Id = id;
+
+                var updatedEntity = categoryService.Update(category);
+
+                if (updatedEntity != null) return Ok(updatedEntity);
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/Categories/5
         [HttpDelete]
-        public void Delete(int id)
+        public IHttpActionResult Delete(int id)
         {
-            categoryService.Delete(id);
+            try
+            {
+                var status = categoryService.Delete(id);
+                if (status) return Ok();
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
-        public void Delete([FromBody]IEnumerable<Category> categories)
+        public IHttpActionResult Delete([FromBody]IEnumerable<Category> categories)
         {
-            categoryService.DeleteRange(categories);
+            try
+            {
+                var status = categoryService.DeleteRange(categories);
+                if (status) return Ok();
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
         [Route("SoftDelete")]
-        public void SoftDelete(int id)
+        public IHttpActionResult SoftDelete(int id)
         {
-            categoryService.SoftDelete(id);
+            try
+            {
+                var status = categoryService.SoftDelete(id);
+                if (status) return Ok();
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
         [Route("UndoSoftDelete")]
-        public void UndoSoftDelete(int id)
+        public IHttpActionResult UndoSoftDelete(int id)
         {
-            categoryService.UndoSoftDelete(id);
+            try
+            {
+                var status = categoryService.UndoSoftDelete(id);
+                if (status) return Ok();
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
         [Route("SoftDeleteRange")]
-        public void SoftDelete([FromBody]IEnumerable<Category> categories)
+        public IHttpActionResult SoftDelete([FromBody]IEnumerable<Category> categories)
         {
-            categoryService.SoftDeleteRange(categories);
+            try
+            {
+                var status = categoryService.SoftDeleteRange(categories);
+                if (status) return Ok();
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

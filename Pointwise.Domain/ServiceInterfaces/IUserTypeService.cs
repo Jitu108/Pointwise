@@ -12,13 +12,13 @@ namespace Pointwise.Domain.ServiceInterfaces
 
         IEnumerable<IUserType> AddRange(IEnumerable<Models.UserType> entities);
 
-        void Delete(int id);
+        bool Delete(int id);
 
-        void DeleteRange(IEnumerable<Models.UserType> entities);
-        void SoftDelete(int id);
-        void UndoSoftDelete(int id);
+        bool DeleteRange(IEnumerable<Models.UserType> entities);
+        bool SoftDelete(int id);
+        bool UndoSoftDelete(int id);
 
-        void SoftDeleteRange(IEnumerable<Models.UserType> entities);
+        bool SoftDeleteRange(IEnumerable<Models.UserType> entities);
 
         IUserType Update(Models.UserType entity);
     }

@@ -68,11 +68,11 @@ namespace Pointwise.SqlDataAccess.EntityConfigurations
                 Property(x => x.UserTypeId).IsRequired();
             }
 
-            HasRequired(x => x.PersistentUserType)
+            HasRequired(x => x.SqlUserType)
                 .WithMany()
                 .HasForeignKey(x => x.UserTypeId);
 
-            HasMany(u => u.UserRoles)
+            HasMany(u => u.SqlUserRoles)
                 .WithMany(r => r.Users)
                 .Map(m =>
                 {

@@ -45,21 +45,27 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
             return insertedRows.Select(x => x.ToDomainEntity()).AsEnumerable();
         }
 
-        public void SoftDelete(int id)
+        public bool SoftDelete(int id)
         {
             var sEntity = context.UserTypes.SingleOrDefault(x => x.Id == id);
+            if (sEntity == null) return false;
+
             sEntity.IsDeleted = true;
             context.SaveChanges();
+            return true;
         }
 
-        public void UndoSoftDelete(int id)
+        public bool UndoSoftDelete(int id)
         {
             var sEntity = context.UserTypes.SingleOrDefault(x => x.Id == id);
+            if (sEntity == null) return false;
+
             sEntity.IsDeleted = false;
             context.SaveChanges();
+            return true;
         }
 
-        public void SoftDeleteRange(IEnumerable<Domain.Models.UserType> entities)
+        public bool SoftDeleteRange(IEnumerable<Domain.Models.UserType> entities)
         {
             var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
             //context.Categories.RemoveRange(sEntities);
@@ -68,21 +74,26 @@ namespace Pointwise.SqlDataAccess.SqlRepositories
                 entity.IsDeleted = true;
             }
             context.SaveChanges();
+            return true;
         }
 
-        public void Delete(int id)
+        public bool Delete(int id)
         {
             var sEntity = context.UserTypes.SingleOrDefault(x => x.Id == id);
+            if (sEntity == null) return false;
+
             context.UserTypes.Remove(sEntity);
             context.SaveChanges();
+            return true;
         }
 
-        public void DeleteRange(IEnumerable<Domain.Models.UserType> entities)
+        public bool DeleteRange(IEnumerable<Domain.Models.UserType> entities)
         {
             var sEntities = entities.Select(x => x.ToPersistentEntity()).AsEnumerable();
             context.UserTypes.RemoveRange(sEntities);
 
             context.SaveChanges();
+            return true;
         }
 
         public IUserType Update(Domain.Models.UserType entity)

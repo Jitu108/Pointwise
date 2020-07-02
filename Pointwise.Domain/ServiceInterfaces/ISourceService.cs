@@ -15,12 +15,12 @@ namespace Pointwise.Domain.ServiceInterfaces
 
         IEnumerable<ISource> AddRange(IEnumerable<Models.Source> entities);
 
-        void Delete(int id);
+        bool Delete(int id);
 
-        void DeleteRange(IEnumerable<Models.Source> entities);
-        void SoftDelete(int id);
-        void UndoSoftDelete(int id);
-        void SoftDeleteRange(IEnumerable<Models.Source> entities);
+        bool DeleteRange(IEnumerable<Models.Source> entities);
+        bool SoftDelete(int id);
+        bool UndoSoftDelete(int id);
+        bool SoftDeleteRange(IEnumerable<Models.Source> entities);
 
         ISource Update(Models.Source entity);
     }

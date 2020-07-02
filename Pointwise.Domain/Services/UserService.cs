@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Pointwise.Domain.Interfaces;
+using Pointwise.Domain.Models;
 using Pointwise.Domain.Repositories;
 using Pointwise.Domain.ServiceInterfaces;
 
@@ -44,6 +45,24 @@ namespace Pointwise.Domain.Services
             if (user == null) throw new ArgumentNullException(nameof(user));
 
             return repository.GetById(user.Id).IsBlocked;
+        }
+
+        public IUser Add(User user)
+        {
+            return repository.Add(user);
+        }
+
+        public IUser Update(User user)
+        {
+            return repository.Update(user);
+        }
+        public IUser Login(string userName, string password)
+        {
+            return repository.Login(userName, password);
+        }
+        public bool Logout(string userName)
+        {
+            return repository.Logout(userName);
         }
     }
 }

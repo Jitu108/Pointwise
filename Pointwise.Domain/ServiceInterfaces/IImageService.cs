@@ -13,12 +13,12 @@ namespace Pointwise.Domain.ServiceInterfaces
 
         IEnumerable<IImage> AddRange(IEnumerable<Models.Image> entities);
         IEnumerable<IImage> AddRange(IEnumerable<Models.Image> entities, int articleId);
-        void Delete(int id);
+        bool Delete(int id);
 
-        void DeleteRange(IEnumerable<Models.Image> entities);
-        void SoftDelete(int id);
-        void UndoSoftDelete(int id);
-        void SoftDeleteRange(IEnumerable<Models.Image> entities);
+        bool DeleteRange(IEnumerable<Models.Image> entities);
+        bool SoftDelete(int id);
+        bool UndoSoftDelete(int id);
+        bool SoftDeleteRange(IEnumerable<Models.Image> entities);
 
         IImage Update(Models.Image entity);
         IEnumerable<IImage> Update(IEnumerable<Models.Image> entities, int articleId);

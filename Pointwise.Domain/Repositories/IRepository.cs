@@ -13,12 +13,12 @@ namespace Pointwise.Domain.Repositories
         IEntity Add(TEntity entity);
         IEnumerable<IEntity> AddRange(IEnumerable<TEntity> entities);
 
-        void Delete(int id);
-        void DeleteRange(IEnumerable<TEntity> entities);
+        bool Delete(int id);
+        bool DeleteRange(IEnumerable<TEntity> entities);
 
-        void SoftDelete(int id);
-        void UndoSoftDelete(int id);
-        void SoftDeleteRange(IEnumerable<TEntity> entities);
+        bool SoftDelete(int id);
+        bool UndoSoftDelete(int id);
+        bool SoftDeleteRange(IEnumerable<TEntity> entities);
 
         IEntity GetById(int id);
         //IEnumerable<IEntity> GetBySearchString(string searchString);
